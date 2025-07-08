@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+.site-footer {
+  background: #f5f5f5;
+  padding: 40px 0px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 14px;
+  color: #000;
+  font-weight: 300;
+}
+.dark .site-footer{
+background: black;
+color: white;
+border-top: 1px solid white;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-column {
+  flex: 1;
+  min-width: 220px;
+}
+
+.footer-column h3 {
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 6px;
+}
+
+.bo-cong-thuong {
+  margin-top: 10px;
+  width: 130px;
+}
+
+.facebook-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.facebook-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.facebook-header img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.checkmark {
+  color: blue;
+}
+
+.fb-follow-button {
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 13px;
+}

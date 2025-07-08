@@ -24,20 +24,25 @@ Route::post('/login', [AuthController::class, 'login']); // Đăng nhập, trả
 Route::get('/categories', [CategoryController::class, 'index']); // Lấy danh sách danh mục
 Route::get('/categories-tree', [CategoryController::class, 'tree']); // Lấy danh sách danh mục dạng tree
 Route::get('/categories-dropdown', [CategoryController::class, 'dropdown']); // Lấy danh sách danh mục dạng dropdown
+Route::get('/categories/slug/{slug}', [CategoryController::class, 'findBySlug']);
 
 // Route công khai cho sản phẩm
 Route::get('/products', [ProductController::class, 'index']); // Lấy danh sách sản phẩm
 Route::get('/products/{id}', [ProductController::class, 'show']); // Lấy chi tiết sản phẩm
+Route::get('/products-by-category/{id}', [ProductController::class, 'getProductsByCategory']);
 
 // Route công khai cho sliders
 Route::get('/sliders', [SliderController::class, 'index']); // Lấy danh sách sliders
 Route::get('/sliders/{id}', [SliderController::class, 'show']); // Lấy chi tiết slider (nếu cần)
 
+Route::apiResource('settings', SettingController::class);
+
 // Các route yêu cầu đăng nhập
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']); // Đăng xuất
     Route::get('/me', [AuthController::class, 'me']); // Lấy thông tin user đang đăng nhập
-    Route::put('/me', [AuthController::class, 'update']); // Cập nhật thông tin user
+    Route::put('/me/update-info', [AuthController::class, 'updateUser']); // Cập nhật thông tin user
+    Route::put('/me/update-password', [AuthController::class, 'changePassword']); // Cập nhật mật khẩu user
 
     // Route resource cho category (CRUD, trừ index)
     Route::apiResource('categories', CategoryController::class)->except(['index']);
@@ -56,7 +61,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('roles/{role}/users', [RoleController::class, 'syncUsers']);
     Route::apiResource('tags', TagController::class);
     Route::apiResource('product-images', ProductImageController::class);
-    Route::apiResource('settings', SettingController::class);
 
     // Giỏ hàng
     Route::get('cart', [CartController::class, 'index']);
@@ -65,12 +69,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('cart/items/{id}', [CartController::class, 'removeItem']);
     Route::delete('cart', [CartController::class, 'clear']);
     Route::post('cart/checkout', [CartController::class, 'checkout']);
+    Route::post('/buy-now', [CartController::class, 'buyNow']);
 
     // Quản lý đơn hàng
     Route::get('orders', [OrderController::class, 'index']);
     Route::get('orders/{id}', [OrderController::class, 'show']);
     Route::put('orders/{id}/status', [OrderController::class, 'updateStatus']);
     Route::get('orders-statistics', [OrderController::class, 'statistics']);
+    Route::post('/buy-now', [OrderController::class, 'buyNow']);
 
     // Quản lý thanh toán
     Route::get('payments', [PaymentController::class, 'index']);

@@ -23,7 +23,13 @@ const categoryApi = {
   
   tree : (params) => {
     return axiosClient.get('/categories-tree', { params });
-  }
+  },
+  dropdown : () =>{
+    return axiosClient.get("/categories-dropdown");
+  },
+  findBySlug: (slug) => {
+  return axiosClient.get(`/categories/slug/${slug}`);
+}
 }
 
 export default categoryApi;

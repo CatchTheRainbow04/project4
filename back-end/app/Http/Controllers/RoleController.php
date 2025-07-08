@@ -33,7 +33,7 @@ class RoleController extends Controller
     }
     public function update(Request $request, $id)
     {
-        $role = Role::findOrFail($id);
+        $role = Role::with('permissions', 'users')->findOrFail($id);
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255|unique:roles,name,' . $id,
             'display_name' => 'sometimes|required|string|max:255',

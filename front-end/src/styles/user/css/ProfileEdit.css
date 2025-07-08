@@ -1,0 +1,91 @@
+.profile-form {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px 20px;
+
+}
+
+.profile-form h2 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 30px;
+
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  
+}
+
+.form-row label {
+  width: 150px;
+  font-weight: 800;
+  margin-right: 10px;
+  
+}
+
+.form-row input,
+.form-row select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+}
+.dark .form-row input,
+.dark .form-row select {
+  color: black;
+
+}
+.form-buttons {
+  margin-top: 30px;
+  text-align: center;
+  
+}
+.btn-update a {
+    text-decoration: none;
+    color: #2c3238;
+}
+
+
+.btn-update,
+.btn-back {
+  padding: 10px 20px;
+  font-size: 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  
+}
+
+.btn-update {
+  background-color: #ececec;
+  margin-right: 10px;
+  color: black;
+  transition: 0.5s ease;
+}
+
+.btn-update:hover {
+  background-color: black;
+  color: white;
+}
+
+.dark .btn-update:hover {
+  background-color: green;
+  color:white;
+  transform: scale(1.03);
+}
+.btn-back {
+  background-color: #948979;
+  transition: 0.5s ease;
+}
+.btn-back a{
+  text-decoration: none;
+  color: white;
+}
+.btn-back:hover{
+  transform: scale(1.03);
+}

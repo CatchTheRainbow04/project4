@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -20,6 +21,12 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
+        ],
+        [
+            'name.required' => 'Vui lòng nhập tên danh mục.',
+            'name.string' => 'Tên danh mục phải là chuỗi.',
+            'name.max' => 'Tên danh mục không được dài quá 255 kí tự.',
+            'parent_id.exists' => 'Tên danh mục cha không tồn tại.',
         ]);
         $validated['slug'] = \Str::slug($validated['name']);
         $category = Category::create($validated);
@@ -37,6 +44,12 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
+        ],
+        [
+            'name.required' => 'Vui lòng nhập tên danh mục.',
+            'name.string' => 'Tên danh mục phải là chuỗi.',
+            'name.max' => 'Tên danh mục không được dài quá 255 kí tự.',
+            'parent_id.exists' => 'Tên danh mục cha không tồn tại.',
         ]);
         if (isset($validated['name'])) {
             $validated['slug'] = \Str::slug($validated['name']);
@@ -104,4 +117,9 @@ class CategoryController extends Controller
 
         return $branch;
     }
+public function findBySlug($slug)
+{
+    $category = Category::where('slug', $slug)->firstOrFail();
+    return response()->json($category);
+}
 }

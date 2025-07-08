@@ -1,0 +1,216 @@
+/* Phần bao toàn bộ trang giỏ hàng */
+ .cart-page {
+     padding: 40px 80px;
+}
+/* Tiêu đề chính */
+ .cart-page h2 {
+     font-size: 26px;
+     font-weight: 700;
+}
+ .cart-page h2 span {
+     font-size: 16px;
+     font-weight: normal;
+     color: #555;
+}
+.dark .cart-page h2 span {
+     color: #d7b7b7;
+}
+/* Nội dung chính chia trái - phải */
+ .cart-content {
+     display: flex;
+     justify-content: space-between;
+     margin-top: 30px;
+}
+/* Cột bên trái chứa danh sách sản phẩm */
+ .cart-left {
+     flex:2;
+     max-height: 500px;
+    /* hoặc 60vh, tuỳ theo ý bạn */
+     overflow-y: auto;
+     padding: 0px 10px;
+     border: 1px solid #eee;
+}
+ .cart-left::-webkit-scrollbar {
+     width: 6px;
+}
+ .cart-left::-webkit-scrollbar-thumb {
+     background: #ccc;
+     border-radius: 4px;
+}
+/* Từng sản phẩm trong giỏ */
+ .cart-item {
+     display: flex;
+     align-items: center;
+     border-bottom: 1px solid #ddd;
+     padding-bottom: 20px;
+     margin: 0 20px 20px 20px;
+}
+/* Hình ảnh sản phẩm */
+ .cart-item img {
+     width: 120px;
+     height: auto;
+     object-fit: cover;
+}
+.cart-item i {
+    transition: 1s;
+}
+ .cart-item i:hover {
+     transform: rotate(360deg);
+}
+/* Thông tin sản phẩm */
+ .item-details {
+     flex: 1;
+}
+ .item-details p {
+     font-size: 16px;
+     margin-bottom: 10px;
+}
+/* Phần chỉnh số lượng */
+ .quantity-control {
+     display: flex;
+     align-items: center;
+     gap: 5px;
+}
+ .quantity-control button {
+     width: 50px;
+     flex:1;
+     border:1px solid black;
+     background: transparent;
+     cursor: pointer;
+     transition: ease-in-out 0.25s;
+}
+ .quantity-control p{
+    flex:1;
+    text-align: center;
+ }
+ .quantity-control button:not(:disabled):hover{
+     background-color: #000;
+     color: white;
+}
+.dark .quantity-control button:not(:disabled):hover{
+     background-color: white;
+     color: black;
+}
+/* Giá sản phẩm */
+.item-price {
+     font-weight: bold;
+     white-space: nowrap;
+}
+/* Cột phải: thông tin tổng kết đơn hàng */
+ .cart-summary {
+     flex: 1;
+     background: #f5f5f5;
+     padding: 20px;
+     margin-left: 30px;
+}
+/* Tiêu đề mục tổng kết */
+.cart-summary h3 {
+     font-size: 18px;
+     font-weight: bold;
+     margin-bottom: 10px;
+     text-transform: uppercase;
+}
+/* Ghi chú */
+ .cart-summary .note {
+     font-size: 14px;
+     color: #777;
+}
+/* Tổng tiền */
+ .total {
+     display: flex;
+     justify-content: space-between;
+     margin: 15px 0;
+     font-size: 16px;
+}
+/* Ô nhập mã giảm giá */
+ .voucher-input {
+     width: 100%;
+     padding: 8px;
+     margin-bottom: 15px;
+}
+/* Nút thanh toán (Link styled như button) */
+ .checkout-btn, .buy-more-btn {
+     display: inline-block;
+     text-align: center;
+     width: 100%;
+     font-weight: bold;
+     text-decoration: none;
+}
+/* Nút TIẾN HÀNH ĐẶT HÀNG - nền đen */
+ .checkout-btn {
+     background: black;
+     color: white;
+     border: none;
+     margin-bottom: 0px;
+     transition: ease-in-out 0.25s;
+}
+ .checkout-btn:hover {
+     background: white;
+     color: black;
+}
+/* Nút MUA THÊM - nền trắng viền đen */
+ .buy-more-btn {
+     background: white;
+     color: black;
+     border: 1px solid #000;
+     margin-top: 10px;
+     padding: 5px 0px;
+     transition: ease-in-out 0.25s;
+}
+ .buy-more-btn:hover {
+     background-color: black;
+     color: white;
+}
+/* Danh sách lợi ích (nếu có) */
+ .benefits {
+     list-style: none;
+     margin-left: 30px;
+     padding: 0;
+}
+ .benefits li {
+     margin-top: 10px;
+     display: flex;
+     align-items: center;
+     gap: 10px;
+}
+ .benefits li img {
+     width: 15px;
+     height: 15px;
+}
+ .benefits p {
+     font-size: 14px;
+}
+.remove-all{
+     display: flex;
+     justify-content: end;
+     position: sticky;
+     top: 0;
+     background: #fff;
+     z-index: 2;
+     padding: 10px 0;
+     border-bottom: 1px solid #ddd;
+}
+.dark .remove-all{
+     background: black;
+     border-bottom: 1px solid #ddd;
+}
+ .remove-all button{
+     padding: 5px 10px;
+     font-weight: bold;
+     background: transparent;
+     transition: ease-in-out 0.5s;
+}
+ .remove-all button:hover{
+    transform: translateX(-20px);
+     background-color: #000;
+     color: white;
+}
+.dark .remove-all button:hover{
+     transform: translateX(-20px);
+     background-color: white;
+     color: black;
+}
+button:disabled {
+     opacity: 0.5;
+     cursor: not-allowed;
+}

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use App\Http\Requests\StorePermissionRequest;
+use App\Http\Requests\UpdatePermissionRequest;
 
 class PermissionController extends Controller
 {
@@ -13,12 +15,22 @@ class PermissionController extends Controller
     }
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:permissions',
+        $validated = $request->validate(
+        [
+            'name' => 'required|string|max:255|unique:permissions,name',
             'display_name' => 'required|string|max:255',
-            'key_code' => 'required|string|max:255|unique:permissions',
+            'key_code' => 'required|string|max:255|unique:permissions,key_code',
             'parent_id' => 'nullable|exists:permissions,id',
-        ]);
+        ],
+        [
+            'name.required' => 'Tên quyền là bắt buộc.',
+            'name.unique' => 'Tên quyền đã tồn tại.',
+            'display_name.required' => 'Tên hiển thị là bắt buộc.',
+            'key_code.required' => 'Mã quyền là bắt buộc.',
+            'key_code.unique' => 'Mã quyền đã tồn tại.',
+            'parent_id.exists' => 'Quyền cha không hợp lệ.',
+        ]
+    );
         $permission = Permission::create($validated);
         return response()->json($permission, 201);
     }
@@ -35,6 +47,14 @@ class PermissionController extends Controller
             'display_name' => 'sometimes|required|string|max:255',
             'key_code' => 'sometimes|required|string|max:255|unique:permissions,key_code,' . $id,
             'parent_id' => 'nullable|exists:permissions,id',
+        ],
+        [
+            'name.required' => 'Tên quyền là bắt buộc.',
+            'name.unique' => 'Tên quyền đã tồn tại.',
+            'display_name.required' => 'Tên hiển thị là bắt buộc.',
+            'key_code.required' => 'Mã quyền là bắt buộc.',
+            'key_code.unique' => 'Mã quyền đã tồn tại.',
+            'parent_id.exists' => 'Quyền cha không hợp lệ.',
         ]);
         $permission->update($validated);
         return response()->json($permission);

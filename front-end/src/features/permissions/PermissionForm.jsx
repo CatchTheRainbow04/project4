@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../services/axiosClient";
+import { toast } from "react-toastify";
 
 function PermissionForm({ initialData = {}, onCancel }) {
   const [name, setName] = useState(initialData.name || "");
@@ -38,16 +39,21 @@ function PermissionForm({ initialData = {}, onCancel }) {
 
       if (initialData.id) {
         await axiosClient.put(`/permissions/${initialData.id}`, data);
+        toast.success("Sửa quyền thành công !");
+        if (onCancel) onCancel();
       } else {
         await axiosClient.post("/permissions", data);
+        toast.success("Tạo mới quyền thành công !");
+        if (onCancel) onCancel();
       }
-
-      if(onCancel) onCancel();
+      if (onCancel) onCancel();
     } catch (err) {
-      if (err.response?.data?.errors) {
-        alert(Object.values(err.response.data.errors).join("\n"));
+      if (err.response && err.response.data && err.response.data.errors) {
+        Object.values(err.response.data.errors).forEach((messages) => {
+          messages.forEach((msg) => toast.error(msg));
+        });
       } else {
-        alert("Lưu quyền hạn thất bại!");
+        toast.error("Lưu quyền thất bại !");
       }
     }
   };
@@ -56,9 +62,10 @@ function PermissionForm({ initialData = {}, onCancel }) {
     if (window.confirm("Bạn chắc chắn muốn xóa quyền này?")) {
       try {
         await axiosClient.delete(`/permissions/${id}`);
+        toast.success("Xóa quyền thành công !");
         if (onCancel) onCancel();
       } catch {
-        alert("Xóa thất bại!");
+        toast.error("Xóa thất bại!");
       }
     }
   };
@@ -77,9 +84,8 @@ function PermissionForm({ initialData = {}, onCancel }) {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Ví dụ: view_post"
-            className="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
-            required
+            placeholder="Ví dụ: category."
+            className="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded w-full bg-white dark:bg-gray-700 text-gray-900 placeholder-gray-400 dark:placeholder-gray-500"
           />
           <small className="text-gray-500 dark:text-gray-400">
             Tên định danh duy nhất của quyền
@@ -96,7 +102,6 @@ function PermissionForm({ initialData = {}, onCancel }) {
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="Ví dụ: Xem bài viết"
             className="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
-            required
           />
         </div>
 
@@ -108,9 +113,8 @@ function PermissionForm({ initialData = {}, onCancel }) {
             type="text"
             value={keyCode}
             onChange={(e) => setKeyCode(e.target.value)}
-            placeholder="Ví dụ: POST_VIEW"
+            placeholder="Ví dụ: category_view"
             className="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
-            required
           />
           <small className="text-gray-500 dark:text-gray-400">
             Mã định danh duy nhất cho quyền này

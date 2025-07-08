@@ -1,33 +1,50 @@
-import React, { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import { Navigate } from "react-router-dom";
+import DashboardLayout from "./layouts/DashboardLayout";
+import PublicLayout from "./layouts/PublicLayout";
 
-// Import pages
-import Dashboard from "./pages/Dashboard";
-import Home from "./pages/Home";
-
-import "./css/style.css"
+//Public page
+import Home from "./components/web/Home";
+import Profile from "./components/web/Profile";
+import Signin from "./components/web/Signin";
+import Signup from "./components/web/Signup";
+import CategoryProduct from "./components/web/CategoryProduct";
+import Checkout from "./components/web/Checkout";
+import Cart from "./components/web/Cart";
+import Order from "./components/web/Order";
+import SearchResult from "./components/web/SearchResult";
+import ProductDetail from "./components/web/ProductDetail";
+import BuyNow from "./components/web/BuyNow";
+import ProfileEdit from "./components/web/ProfileEdit";
+import PasswordEdit from "./components/web/PasswordEdit";
+import Dashboard from "./components/dashboard/Dashboard";
 
 function App() {
-  const location = useLocation();
-
-  useEffect(() => {
-    document.querySelector("html").style.scrollBehavior = "auto";
-    window.scroll({ top: 0 });
-    document.querySelector("html").style.scrollBehavior = "";
-  }, [location.pathname]); // triggered on route change
-
   return (
     <>
+      <ToastContainer position="top-right" autoClose={1500} />
       <Routes>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<Home/>}/>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route exact path="/dashboard" element={<Dashboard />} />
+        {/* Public site layout */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<SearchResult />} />
+          <Route path="/:slug" element={<CategoryProduct />} />
+          <Route path="/detail/:id" element={<ProductDetail />} />
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile-edit" element={<ProfileEdit />} />
+          <Route path="/password-edit" element={<PasswordEdit />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/order" element={<Order />} />
+          <Route path="/buy-now" element={<BuyNow />} />
+        </Route>
+
+        <Route element={<DashboardLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
       </Routes>
     </>
   );

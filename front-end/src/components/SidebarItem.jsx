@@ -1,5 +1,5 @@
 import React from "react";
-import SidebarLinkGroup from "../partials/SidebarLinkGroup";
+import SidebarLinkGroup from "./dashboard/SidebarLinkGroup";
 import Transition from '../utils/Transition';
 
 function SidebarItem({

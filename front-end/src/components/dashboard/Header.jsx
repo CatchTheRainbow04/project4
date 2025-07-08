@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import SearchModal from "../components/ModalSearch";
-import UserMenu from "../components/DropdownProfile";
-import ThemeToggle from "../components/ThemeToggle";
+import SearchModal from "../../components/ModalSearch";
+import UserMenu from "../../components/DropdownProfile";
+import ThemeToggle from "../../components/ThemeToggle";
+import { Link } from "react-router-dom";
 
 function Header({ sidebarOpen, setSidebarOpen, variant = "default" }) {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
@@ -52,6 +53,9 @@ function Header({ sidebarOpen, setSidebarOpen, variant = "default" }) {
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
+          <div>
+            <Link to="/">Website</Link>
+          </div>
             <div>
               <button
                 className={`w-8 h-8 flex items-center justify-center hover:bg-gray-100 lg:hover:bg-gray-200 dark:hover:bg-gray-700/50 dark:lg:hover:bg-gray-800 rounded-full ml-3 ${

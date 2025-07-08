@@ -1,0 +1,102 @@
+.account-container {
+  padding: 40px;
+  color: #333;
+}
+
+.account-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 40px;
+}
+.dark .account-title {
+  color: white;
+}
+
+.account-content {
+  display: flex;
+  justify-content: space-around;
+  gap: 40px;
+}
+
+.account-section {
+  flex: 1;
+  max-width: 400px;
+}
+.dark .account-section p {
+  color: white;
+}
+.dark .account-section h3 {
+  color: white;
+}
+
+.account-section a {
+    text-decoration: none;
+    color: #2c3238;
+    display: flex;
+    flex-direction: column;
+}
+.account-section a p {
+    position: relative;
+    text-decoration: none;
+    width: fit-content;
+}
+.dark .account-section a p {
+    color:white;
+}
+
+.account-section a p::after{
+  content: '';
+     position: absolute;
+     bottom: -5px;
+     left: 0;
+     height: 2px;
+     width: 0;
+     background-color: red;
+     transition: width 0.3s ease;
+}
+
+.account-section a p:hover::after{
+  width: 100%;
+  
+}
+.account-section a p:hover{
+font-weight: bold;
+}
+
+.account-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.account-section hr {
+  margin-bottom: 16px;
+  border: none;
+  border-top: 1px solid #999;
+}
+
+.account-section p {
+  margin: 8px 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.signout {
+  width: fit-content;
+}
+.signout i{
+  transition: ease 0.5s;
+}
+.signout:hover , .signout:hover i {
+  color: red;
+  font-weight: bold;
+}
+.dark .signout:hover ,.dark .signout:hover i {
+  color: red;
+  font-weight: bold;
+}
+.customer-level{
+  color: red;
+  font-weight: bold;
+}

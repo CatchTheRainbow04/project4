@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import debounce from "lodash/debounce";
-import axiosClient from "../../services/axiosClient";
+import categoryApi from "../../services/categoryApi";
+import { toast } from "react-toastify";
 
-function CategoriesTable({ onAddCategory, onEditCategory }) {
+function CategoriesTable({ onEditCategory }) {
   const [categories, setCategories] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +25,7 @@ function CategoriesTable({ onAddCategory, onEditCategory }) {
 
   const fetchCategories = () => {
     setLoading(true);
-    axiosClient.get("/categories")
+    categoryApi.getAll()
       .then(res => {
         if (Array.isArray(res.data)) {
           setCategories(res.data);
@@ -37,7 +38,7 @@ function CategoriesTable({ onAddCategory, onEditCategory }) {
           setFilteredCategories([]);
         }
       })
-      .catch(() => alert("Lỗi tải danh mục!"))
+      .catch(() => toast.error("Lỗi tải danh mục !"))
       .finally(() => setLoading(false));
   };
 

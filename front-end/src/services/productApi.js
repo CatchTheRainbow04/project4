@@ -2,7 +2,7 @@ import axiosClient from "./axiosClient";
 
 const productApi = {
     getAll: (params) => {
-    return axiosClient.get('/products', { params });
+    return axiosClient.get(`/products/?q=${params}`);
   },
 
   getById: (id) => {
@@ -20,6 +20,12 @@ const productApi = {
   delete: (id) => {
     return axiosClient.delete(`/products/${id}`);
   },
+
+  getProductsByCategory: (id, page = 1) => {
+  return axiosClient.get(`/products-by-category/${id}`, {
+    params: { page }
+  });
+}
 }
 
 export default productApi;

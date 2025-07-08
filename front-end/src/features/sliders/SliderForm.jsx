@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../services/axiosClient";
+import { toast } from "react-toastify";
 
-function SliderForm({ initialData = {}, onSubmit, onCancel }) {
+function SliderForm({ initialData = {}, onCancel }) {
   const [name, setName] = useState(initialData.name || "");
   const [description, setDescription] = useState(initialData.description || "");
   const [image, setImage] = useState(null);
@@ -31,6 +32,7 @@ function SliderForm({ initialData = {}, onSubmit, onCancel }) {
     if (image) {
       formData.append("image_path", image);
     }
+    console.log("Form data:", name, description, imageName, imageUrl);
     try {
       if (initialData.id) {
         await axiosClient.post(
@@ -45,8 +47,10 @@ function SliderForm({ initialData = {}, onSubmit, onCancel }) {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
+      toast.success(
+        initialData.id ? "Cập nhật slider thành công!" : "Tạo mới slider thành công!"
+      );
       if (onCancel) onCancel();
-      if (onSubmit) onSubmit();
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         alert(Object.values(err.response.data.errors).join("\n"));

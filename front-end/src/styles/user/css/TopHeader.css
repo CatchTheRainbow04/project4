@@ -1,0 +1,39 @@
+.top-header {
+  width: 100%;
+  z-index: 600;
+  transition: top 0.3s ease;
+  height: 25px;
+}
+
+.top-header-container {
+  max-width: 1420px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.phone-number {
+  font-size: 14px;
+
+}
+
+.account-cart a {
+  margin-left: 40px;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.account-cart a:hover {
+  text-decoration: underline;
+}
+
+.phone-number{
+  font-size: 12px;
+  text-decoration: none;
+}
+.phone-number a {
+  margin-left: 3px;
+  text-decoration: none;
+}

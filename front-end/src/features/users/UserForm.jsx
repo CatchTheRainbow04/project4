@@ -66,12 +66,12 @@ const handleDelete = async (id) => {
       onSubmit={handleSubmit}
       className="space-y-4 bg-white p-6 rounded shadow"
     >
-      <h3 className="text-lg font-bold">
+      <h3 className="text-lg font-bold dark:text-gray-950">
         {initialData.id ? "Cập nhật" : "Tạo mới"} người dùng
       </h3>
 
       <div>
-        <label className="block text-sm font-medium">Tên</label>
+        <label className="block text-sm font-medium dark:text-gray-950">Tên</label>
         <input
           type="text"
           className="w-full border px-3 py-2 rounded"
@@ -88,7 +88,7 @@ const handleDelete = async (id) => {
       )}
 
       <div>
-        <label className="block text-sm font-medium">Email</label>
+        <label className="block text-sm font-medium dark:text-gray-950">Email</label>
         <input
           type="email"
           className="w-full border px-3 py-2 rounded"
@@ -105,7 +105,7 @@ const handleDelete = async (id) => {
       )}
 
       <div>
-        <label className="block text-sm font-medium">
+        <label className="block text-sm font-medium dark:text-gray-950">
           Mật khẩu{" "}
           {initialData.id && (
             <span className="text-gray-500">(bỏ trống để giữ nguyên)</span>
@@ -126,7 +126,7 @@ const handleDelete = async (id) => {
       )}
 
       <div>
-        <label className="block text-sm font-medium mb-1">Vai trò</label>
+        <label className="block text-sm font-medium mb-1 dark:text-gray-950">Vai trò</label>
         <Select
           isMulti
           options={roles}

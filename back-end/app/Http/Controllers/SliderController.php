@@ -11,7 +11,6 @@ class SliderController extends Controller
     public function index()
     {
         $sliders = Slider::all();
-        // Thêm image_url cho mỗi slider
         $sliders->transform(function ($slider) {
             $slider->image_url = $slider->image_path ? Storage::url($slider->image_path) : null;
             return $slider;

@@ -3,24 +3,22 @@ import Transition from '../utils/Transition';
 import axiosClient from "../services/axiosClient";
 
 import UserAvatar from '../images/user-avatar-32.png';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function DropdownProfile({
   align
 }) {
+
+  const {user , logout} = useAuth();
+  const navigate = useNavigate();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const trigger = useRef(null);
   const dropdown = useRef(null);
 
-    const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    axiosClient
-      .get("/me")
-      .then((res) => setUser(res.data.user))
-      .catch(() => (window.location.href = "/login"));
-  }, []);
   useEffect(() => {
     const clickHandler = ({ target }) => {
       if (!dropdown.current) return;
@@ -44,12 +42,11 @@ function DropdownProfile({
   // Hàm xử lý đăng xuất
   const handleSignOut = async () => {
     try {
-      await axiosClient.post("/logout");
-      setUser(null);
-      window.location.href = "/login";
+      res = await logout();
+      toast.success("Đăng xuất thành công !")
+      navigate("/");
     } catch (error) {
-      // Xử lý lỗi nếu cần
-      window.location.href = "/login";
+      toast.error(error);
     }
   };
 
@@ -89,7 +86,7 @@ function DropdownProfile({
           <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-gray-200 dark:border-gray-700/60">
             <div className="font-medium text-gray-800 dark:text-gray-100">{user?.name}</div>
             <div className="text-xs text-gray-500 dark:text-gray-400 italic">
-              {user?.roles?.[0]?.display_name || "Chưa có vai trò"}
+              {user?.roles?.some((role) => role.name === "admin") && "Quảng trị viên" && user?.roles?.[0].display_name}
             </div>
           </div>
           <ul>

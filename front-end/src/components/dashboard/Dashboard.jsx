@@ -1,24 +1,46 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 
-import Sidebar from "../partials/Sidebar";
-import Header from "../partials/Header";
-import CategoriesTable from "../features/categories/CategoriesTable";
-import CategoryForm from "../features/categories/CategoryForm";
-import ProductsTable from "../features/products/ProductsTable";
-import ProductForm from "../features/products/ProductForm";
-import PermissionsTable from "../features/permissions/PermissionsTable";
-import PermissionForm from "../features/permissions/PermissionForm";
-import SlidersTable from "../features/sliders/SlidersTable";
-import SliderForm from "../features/sliders/SliderForm";
-import RolesTable from "../features/roles/RolesTable";
-import RoleForm from "../features/roles/RoleForm";
-import UsersTable from "../features/users/UsersTable";
-import UserForm from "../features/users/UserForm";
-import Welcome from "../partials/dashboard/Welcome";
-import GradientText from "../../Reactbits/GradientText/GradientText";
-import ClickSpark from "../../ReactbitsAnimations/ClickSpark/ClickSpark";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import Welcome from "./Welcome";
+
+import GradientText from "../../../Reactbits/GradientText/GradientText";
+import ClickSpark from "../../../ReactbitsAnimations/ClickSpark/ClickSpark";
+
+import CategoriesTable from "../../features/categories/CategoriesTable";
+import CategoryForm from "../../features/categories/CategoryForm";
+import ProductsTable from "../../features/products/ProductsTable";
+import ProductForm from "../../features/products/ProductForm";
+import PermissionsTable from "../../features/permissions/PermissionsTable";
+import PermissionForm from "../../features/permissions/PermissionForm";
+import SlidersTable from "../../features/sliders/SlidersTable";
+import SliderForm from "../../features/sliders/SliderForm";
+import RolesTable from "../../features/roles/RolesTable";
+import RoleForm from "../../features/roles/RoleForm";
+import UsersTable from "../../features/users/UsersTable";
+import UserForm from "../../features/users/UserForm";
+import TagForm from "../../features/tags/TagForm";
+import TagsTable from "../../features/tags/TagsTable";
+import { useAuth } from "../../contexts/AuthContext";
+
+import "../../css/style.css";
+
+import useRequireAuth from "../../hooks/useRequireAuth";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const isAuthenticated = useRequireAuth("/" , "Vui lòng đăng nhập");
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+  if (user && !user.roles.some((role) => role.name === "admin")) {
+    toast.error("Bạn không có quyền truy cập trang này");
+    navigate("/");
+  }
+}, [user, navigate]);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mainContent, setMainContent] = useState("welcome");
 
@@ -29,6 +51,7 @@ function Dashboard() {
   const [editSlider, setEditSlider] = useState(null);
   const [editRole, setEditRole] = useState(null);
   const [editUser, setEditUser] = useState(null);
+  const [editTag, setEditTag] = useState(null);
 
   // Dashboard
   const handleShowDashboard = () => {
@@ -94,6 +117,15 @@ function Dashboard() {
     setEditUser(user);
     setMainContent("userForm");
   };
+  // Tags
+  const handleShowTags = (type = "tags") => {
+    setMainContent(type);
+    clearEditStates();
+  };
+  const handleEditTag = (tag) => {
+    setEditTag(tag);
+    setMainContent("tagForm");
+  };
   // Xóa tất cả trạng thái chỉnh sửa
   const clearEditStates = () => {
     setEditCategory(null);
@@ -102,6 +134,7 @@ function Dashboard() {
     setEditSlider(null);
     setEditRole(null);
     setEditUser(null);
+    setEditTag(null);
   };
 
   const renderTitle = () => {
@@ -130,11 +163,15 @@ function Dashboard() {
         return "Người dùng";
       case "userForm":
         return editUser ? "Sửa người dùng" : "Thêm người dùng";
+      case "tags":
+        return "Tags";
+      case "tagForm":
+        return editTag ? "Sửa tag" : "Thêm tag";
       default:
         return "Welcome";
     }
   };
-
+  if(!isAuthenticated || !user) return null;
   return (
     <>
       <ClickSpark
@@ -156,6 +193,7 @@ function Dashboard() {
             onShowSliders={handleShowSliders}
             onShowRoles={handleShowRoles}
             onShowUsers={handleShowUsers}
+            onShowTags={handleShowTags}
           />
 
           {/* Content area */}
@@ -245,6 +283,15 @@ function Dashboard() {
                     <UserForm
                       initialData={editUser || {}}
                       onCancel={() => setMainContent("users")}
+                    />
+                  )}
+                  {mainContent === "tags" && (
+                    <TagsTable onEditTag={handleEditTag} />
+                  )}
+                  {mainContent === "tagForm" && (
+                    <TagForm
+                      initialData={editTag || {}}
+                      onCancel={() => setMainContent("tags")}
                     />
                   )}
                 </div>

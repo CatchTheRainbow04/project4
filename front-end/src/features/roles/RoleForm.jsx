@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../services/axiosClient";
+import { toast } from "react-toastify";
 
-function RoleForm({ initialData = {}, onSubmit, onCancel }) {
+function RoleForm({ initialData = {}, onCancel }) {
   const [name, setName] = useState(initialData.name || "");
   const [displayName, setDisplayName] = useState(
     initialData.display_name || ""
@@ -28,10 +29,6 @@ function RoleForm({ initialData = {}, onSubmit, onCancel }) {
           axiosClient.get("/permissions"),
           axiosClient.get("/users"),
         ]);
-
-        console.log("Permissions response:", permissionsRes.data);
-        console.log("Users response:", usersRes.data);
-
         // Handle Laravel API response structure
         const permissionsData =
           permissionsRes.data.data || permissionsRes.data || [];
@@ -39,11 +36,7 @@ function RoleForm({ initialData = {}, onSubmit, onCancel }) {
 
         setPermissions(Array.isArray(permissionsData) ? permissionsData : []);
         setUsers(Array.isArray(usersData) ? usersData : []);
-
-        console.log("Processed permissions:", permissionsData);
-        console.log("Processed users:", usersData);
       } catch (err) {
-        console.error("Error fetching data:", err);
         setError(
           err.response?.data?.message ||
             "Không thể tải dữ liệu. Vui lòng thử lại sau."
@@ -77,12 +70,12 @@ function RoleForm({ initialData = {}, onSubmit, onCancel }) {
       if (initialData.id) {
         await axiosClient.put(`/roles/${initialData.id}`, data);
         roleId = initialData.id;
-        if (onSubmit) onSubmit();
-        if(onCancel) onCancel();
+        toast.success("Cập nhật vai trò thành công!");
+        if (onCancel) onCancel();
       } else {
         const response = await axiosClient.post("/roles", data);
         roleId = response.data.id;
-        if (onSubmit) onSubmit();
+        toast.success("Tạo vai trò mới thành công!");
         if (onCancel) onCancel();
       }
 
@@ -90,19 +83,21 @@ function RoleForm({ initialData = {}, onSubmit, onCancel }) {
       await axiosClient.post(`/roles/${roleId}/permissions`, {
         permissions: selectedPermissions,
       });
+      toast.success("Cập nhật quyền hạn cho vai trò thành công!");
 
       // Sync users
       await axiosClient.post(`/roles/${roleId}/users`, {
         users: selectedUsers,
       });
-
-      if (onSubmit) onSubmit();
+      toast.success("Cập nhật vai trò cho người dùng thành công!");
       if (onCancel) onCancel();
     } catch (err) {
-      if (err.response?.data?.errors) {
-        alert(Object.values(err.response.data.errors).join("\n"));
+      if (err.response && err.response.data && err.response.data.errors) {
+        Object.values(err.response.data.errors).forEach((messages) => {
+          messages.forEach((msg) => toast.error(msg));
+        });
       } else {
-        alert("Lưu vai trò thất bại!");
+        toast.error("Lưu vai trò thất bại!");
       }
     }
   };
@@ -198,20 +193,21 @@ function RoleForm({ initialData = {}, onSubmit, onCancel }) {
             </div>
           </div>
           <div className="col-span-5 col-start-6 row-start-1">
-          <div className="flex justify-between w-full"><span className="block mb-1 text-black dark:text-white">
-              Quyền hạn
-              
-            </span>
-            <label className="text-black dark:text-white">
-                  <input
-                    type="checkbox"
-                    className="mr-2"
-                    checked={selectedPermissions.length === permissions.length}
-                    onChange={(e) => handleSelectAllPermissions(e.target.checked)}
-                  />
-                  Chọn tất cả
-                </label></div>
-            
+            <div className="flex justify-between w-full">
+              <span className="block mb-1 text-black dark:text-white">
+                Quyền hạn
+              </span>
+              <label className="text-black dark:text-white">
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  checked={selectedPermissions.length === permissions.length}
+                  onChange={(e) => handleSelectAllPermissions(e.target.checked)}
+                />
+                Chọn tất cả
+              </label>
+            </div>
+
             <input
               type="text"
               placeholder="Tìm quyền..."
@@ -355,7 +351,9 @@ function RoleForm({ initialData = {}, onSubmit, onCancel }) {
                         htmlFor={`user_${user.id}`}
                         className="cursor-pointer flex-1"
                       >
-                        <div className="text-sm font-medium text-black">{user.name}</div>
+                        <div className="text-sm font-medium text-black">
+                          {user.name}
+                        </div>
                         <div className="text-xs text-gray-800">
                           {user.email}
                         </div>

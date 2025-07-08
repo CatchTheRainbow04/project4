@@ -1,0 +1,247 @@
+/* ChiTietSP.css */
+
+.product-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 40px 80px 40px 80px;
+  
+}
+.product-detail .content {
+  display: flex;
+}
+
+.product-detail-left {
+  flex: 2;
+  display: flex;
+  gap:10px;
+}
+.product-detail-left div:first-child{
+ flex:3
+}
+.product-detail-left div:last-child{
+ flex:1;
+}
+
+.main-image {
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: 0.5s ease-in-out;
+}
+
+
+.detail-image{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.detail-image button{
+  width: 75%;
+  height: fit-content;
+  padding: 0;
+}
+.detail-image img{
+  width: 100%;
+}
+
+
+.product-detail-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.product-detail-right h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.status {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #000;
+}
+.dark .price {
+  color: white;
+}
+
+.color-select p, .size-select p {
+  font-weight: bold;
+  margin: 0;
+}
+
+.colors {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+
+
+.color-option.active {
+  border: 2px solid #000;
+}
+
+.sizes button {
+  border: 1px solid #ccc;
+  background: white;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.quantity-select {
+  display: flex;
+  align-items: center;
+  gap:3px;
+}
+
+.quantity-select button {
+  width: 50px;
+  height: 100%;
+  font-size: 16px;
+  background-color: transparent;
+  border: none;
+  transition: 0.5s ease-in-out;                
+}
+.quantity-select button:hover {
+  background-color: black;
+  color: white;        
+}
+.dark .quantity-select button {
+  border: 1px solid white;           
+}
+.dark .quantity-select button:hover {
+  background-color: white;
+  color: black;               
+}
+
+.quantity-select input {
+  height: 100%;
+  width: 50px;
+  text-align: center;
+}
+
+.dark .quantity-select input {
+  color: black;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.add-to-cart, .buy-now {
+  width: 50%;
+  background: #000;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.5s ease;
+}
+.add-to-cart:hover, .buy-now:hover {
+  background: white;
+  color: black;
+}
+
+.dark .add-to-cart, .dark .buy-now {
+  background: white;
+  color: black;
+}
+.dark .add-to-cart:hover, .dark .buy-now:hover {
+  background: black;
+  color: white;
+}
+
+.favorite {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.share {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.store-check {
+  margin-top: 20px;
+}
+
+.store-check p {
+  font-weight: bold;
+}
+
+.store-check select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+
+.size-select p a {
+  color: #000;              /* Màu đen */
+  font-weight: normal;      /* Chữ mỏng hơn (nếu mặc định là bold) */
+  text-decoration: underline; /* Gạch chân dưới */
+  font-size: 13px;          /* Nhỏ hơn một chút nếu muốn */
+  margin-left: 5px;         /* Tạo khoảng cách giữa "KÍCH THƯỚC" và link */
+}
+
+hr {
+  border: none;
+  border-top: 1px dotted #ccc; /* hoặc solid nếu không muốn dạng chấm */
+  margin: 20px 0; /* khoảng cách trên dưới */
+}
+
+
+.info-section ul {
+  list-style-type: none;     /* bỏ dấu chấm */
+  padding-left: 0;           /* bỏ thụt đầu dòng */
+}
+
+.info-section li {
+  font-weight: 400;          /* hoặc 300 nếu muốn nhẹ hơn nữa */
+  font-size: 14px;           /* có thể điều chỉnh tùy ý */
+  margin-bottom: 4px;
+}
+
+.info-section div {
+  font-weight: bold;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+.back-to-home{
+  font-weight: bold;
+  position: relative;
+  width: fit-content;
+  padding-bottom: 4px;
+}
+.back-to-home::after {
+     content: '';
+     position: absolute;
+     bottom: 0;
+     left: 0;
+     height: 2px;
+     width: 0;
+     background-color: black;
+     transition: width 0.3s ease;
+}
+.dark .back-to-home::after {
+     background-color: white;
+}
+.back-to-home:hover::after {
+     width: 100%;
+}

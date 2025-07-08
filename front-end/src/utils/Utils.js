@@ -61,3 +61,11 @@ export const oklchToRGBA = (oklchColor) => {
   
   return computedColor;
 };
+
+export function formatPriceVND(price) {
+  if (isNaN(price)) return '0 ₫';
+  return Number(price).toLocaleString('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  });
+}

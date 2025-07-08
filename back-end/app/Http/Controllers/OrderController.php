@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -105,4 +108,55 @@ class OrderController extends Controller
 
         return response()->json($statistics);
     }
+
+        public function buyNow(Request $request)
+{
+    $validated = $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'quantity' => 'required|integer|min:1',
+        'customer_name' => 'required|string|max:255',
+        'customer_phone' => 'required|string|max:20',
+        'customer_email' => 'required|email',
+        'shipping_address' => 'required|string',
+        'payment_method' => 'required|in:cod,banking',
+        'note' => 'nullable|string'
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        $product = Product::findOrFail($validated['product_id']);
+        $total = $product->price * $validated['quantity'];
+
+        $order = Order::create([
+            'user_id' => Auth::id(),
+            'customer_name' => $validated['customer_name'],
+            'customer_phone' => $validated['customer_phone'],
+            'customer_email' => $validated['customer_email'],
+            'shipping_address' => $validated['shipping_address'],
+            'order_status' => $validated['payment_method'] === 'cod' ? 'pending' : 'waiting_payment',
+            'total_price' => $total,
+            'payment_status' => 'pending',
+            'payment_method' => $validated['payment_method'],
+            'note' => $validated['note'] ?? null
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => $validated['quantity'],
+            'price' => $product->price
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Buy now order created successfully',
+            'order' => $order->load('items.product')
+        ], 201);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['message' => 'Buy now failed'], 500);
+    }
+}
 }

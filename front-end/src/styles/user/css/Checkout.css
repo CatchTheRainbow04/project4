@@ -1,0 +1,224 @@
+.checkout-container {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 32px;
+     padding: 20px;
+     align-items: stretch;
+    /* ✅ đảm bảo chiều cao bằng nhau */
+}
+ .checkout-form {
+     flex: 2;
+     min-width: 300px;
+     display: flex;
+     flex-direction: column;
+}
+ .checkout-form input, .checkout-form select, .checkout-form textarea {
+     width: 100%;
+     padding: 8px;
+     margin: 8px 0;
+     box-sizing: border-box;
+}
+.dark input , .dark select , .dark textarea {
+  color: black;
+}
+ .row-2 {
+     display: flex;
+     gap: 12px;
+}
+ .row-2 input, .row-2 select {
+     flex: 1;
+}
+ .checkout-form textarea {
+     height: 80px;
+     resize: vertical;
+}
+ .payment-option {
+     margin-top: 12px;
+     display: block;
+}
+ .checkout-summary {
+     flex: 1;
+     min-width: 280px;
+     padding: 16px;
+     display: flex;
+     flex-direction: column;
+     border: 1px solid #ddd;
+     border-radius: 8px;
+     height: auto;
+     min-height: 100%;
+    /* chiếm toàn bộ chiều cao nếu được */
+}
+ .absolute-area {
+     margin-top: auto;
+    /* ✅ đẩy xuống dưới cùng */
+     padding-top: 1rem;
+     border-top: 1px solid #ddd;
+}
+ .items-flex {
+     flex: 0 1 50%;
+     overflow-y: auto;
+     max-height: 300px;
+    /* fallback khi nội dung ngắn */
+}
+ .checkout-summary .item {
+     width: 100%;
+     display: flex;
+     gap: 12px;
+     margin-bottom: 12px;
+}
+ .checkout-summary img {
+     flex:1;
+     margin-top: 10px;
+     width: 70px;
+     height: 70px;
+     object-fit: cover;
+}
+ .apply-button {
+     padding: 6px 12px;
+     margin: 8px 0;
+     background-color: #007bff;
+     color: white;
+     border: none;
+     cursor: pointer;
+}
+ .total-section {
+     margin-top: 16px;
+}
+ .total-section p {
+     font-size: 16px;
+}
+ .note-1 {
+     font-size: 14px;
+     padding: 10px;
+     color: #000;
+     border: 1px solid orange;
+}
+ .dark .note-1 p {
+     color: white;
+}
+ .submit-button {
+     width: 100%;
+     padding: 10px;
+     background-color: #007bff;
+     color: white;
+     border: none;
+     font-size: 16px;
+     cursor: pointer;
+     margin-top: 12px;
+}
+ .item-details-1{
+     display: flex;
+     flex:3;
+     align-items: center;
+     border-right: 1px solid black;
+}
+ .item-details-1 div:last-child{
+     display: flex;
+     flex-direction: row;
+     justify-content: space-evenly;
+     align-items: center;
+}
+.item-details-1 div:last-child input{
+     padding: 0;
+}
+ .item-details-1 span{
+     margin: 0px 10px;
+}
+ .item-details-1 div{
+     display: flex;
+     width: 100%;
+     flex-direction: column;
+}
+ .item-details-1 p{
+     font-size: 13px;
+     width: 80%;
+}
+ .item-details-2{
+     flex:1;
+     display: flex;
+     align-items: center;
+}
+ .item-details-2 p{
+     width: 70px;
+     text-align:end;
+}
+ .item{
+     width: 100%;
+}
+ .flash-sale{
+     text-align: center;
+}
+ .flash-sale input{
+     width: 65%;
+     height: 30px;
+     margin-right: 14px;
+}
+ .flash-sale button{
+     width: 30%;
+     height: 35px;
+}
+ .payment-method {
+     border: 1px solid #ddd;
+     border-radius: 6px;
+     padding: 15px 20px;
+     margin-top: 10px;
+}
+ .radio-label {
+     display: flex;
+     align-items: center;
+     gap: 10px;
+     cursor: pointer;
+}
+ .radio-input input[type="radio"] {
+     accent-color: #007bff;
+    /* Màu xanh của radio */
+     width: 20px;
+     height: 20px;
+     cursor: pointer;
+}
+ .radio-label-primary {
+     font-size: 16px;
+     color: #333;
+}
+.dark  .radio-label-primary {
+     color: white;
+}
+ .back-cart-link {
+     margin-top: 10px;
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     color: #007bff;
+     text-decoration: none;
+     transition: color 0.2s ease;
+}
+ .back-cart-link:hover {
+     color: #0056b3;
+}
+ .back-cart-link .icon-arrow {
+     fill: #007bff;
+     transition: transform 0.2s ease;
+}
+ .back-cart-link:hover .icon-arrow {
+     transform: translateX(-3px);
+     fill: #0056b3;
+}
+ .quantity-button{
+     width: 25px;
+     height: 25px;
+     border: 1px solid black;
+     background: transparent;
+     transition: 0.5s ease-in-out;
+}
+.dark .quantity-button{
+     border: 1px solid white;
+}
+ .quantity-button:not(:disabled):hover{
+     background: black;
+     color: white;
+}
+.dark .quantity-button:not(:disabled):hover{
+     background: white;
+     color: black;
+}
+ 

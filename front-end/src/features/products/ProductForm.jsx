@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import axiosClient from "../../services/axiosClient";
 import CreatableSelect from "react-select/creatable";
 import Stack from "../../ReactbitsComponents/Stack/Stack";
+import productApi from "../../services/productApi";
+import categoryApi from "../../services/categoryApi";
+import { toast } from "react-toastify";
 
 function ProductForm({ initialData = {}, onCancel }) {
   const [name, setName] = useState(initialData.name || "");
@@ -39,8 +42,8 @@ function ProductForm({ initialData = {}, onCancel }) {
 
   useEffect(() => {
     setLoadingDropdown(true);
-    axiosClient
-      .get("/categories-dropdown")
+    categoryApi
+      .dropdown()
       .then((res) => {
         setDropdown(Array.isArray(res.data) ? res.data : []);
       })
@@ -53,7 +56,7 @@ function ProductForm({ initialData = {}, onCancel }) {
       })
       .catch(() => setTags([]));
   }, []);
-//
+  //
   const images = initialData.images
     ? initialData.images.map((img) => ({
         id: img.id,
@@ -62,16 +65,16 @@ function ProductForm({ initialData = {}, onCancel }) {
           : `http://127.0.0.1:8000${img.image_url}`,
       }))
     : [];
-    //
+  //
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa?")) return;
     // Xóa ảnh chi tiết
     try {
-      await axiosClient.delete(`/products/${id}`);
-      alert("Đã xóa thành công!");
+      await productApi.delete(id);
+      toast.success("Xóa thành công");
       if (onCancel) onCancel();
     } catch {
-      alert("Xóa thất bại!");
+      toast.success("Xóa thất bại");
     }
   };
 
@@ -96,6 +99,7 @@ function ProductForm({ initialData = {}, onCancel }) {
     const file = e.target.files[0];
     setFeatureImage(file);
     setFeatureImageName(file ? file.name : "");
+
   };
 
   // Khi chọn nhiều ảnh chi tiết
@@ -120,25 +124,21 @@ function ProductForm({ initialData = {}, onCancel }) {
     detailImages.forEach((file) => formData.append("images[]", file));
     try {
       if (initialData.id) {
-        await axiosClient.post(
-          `/products/${initialData.id}?_method=PUT`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
+        await productApi.update(initialData.id, formData);
+        toast.success("Sửa sản phẩm thành công");
         if (onCancel) onCancel();
       } else {
-        await axiosClient.post("/products", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await productApi.create(formData);
+        toast.success(`Đã thêm ${formData.get("name")}`);
       }
-      if (onCancel) onCancel(); // callback để reload bảng hoặc đóng form
+      if (onCancel) onCancel();
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
-        alert(Object.values(err.response.data.errors).join("\n"));
+        Object.values(err.response.data.errors).forEach((messages) => {
+          messages.forEach((msg) => toast.error(msg));
+        });
       } else {
-        alert("Lưu sản phẩm thất bại!");
+        toast.error("Lưu sản phẩm thất bại!");
       }
     }
   };
@@ -161,7 +161,6 @@ function ProductForm({ initialData = {}, onCancel }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2  placeholder-gray-400 dark:placeholder-gray-500"
-              required
               placeholder="Nhập tên sản phẩm"
             />
           </div>
@@ -176,7 +175,6 @@ function ProductForm({ initialData = {}, onCancel }) {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               className="w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2"
-              required
               min={0}
               placeholder="Nhập giá sản phẩm"
             />
@@ -192,7 +190,6 @@ function ProductForm({ initialData = {}, onCancel }) {
               value={categoryId || ""}
               onChange={(e) => setCategoryId(e.target.value)}
               disabled={loadingDropdown}
-              required
             >
               <option value="">-- Chọn danh mục --</option>
               {dropdown.map((cat) => (
@@ -334,14 +331,17 @@ function ProductForm({ initialData = {}, onCancel }) {
                 </button>
               </div>
               <div className="col-start-7">
-              {initialData.id && (<button
-                type="button"
-                  onClick={() =>{handleDelete(initialData.id)} }
-                  className="w-full px-3 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                >
-                  Xóa
-                </button>)}
-                
+                {initialData.id && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleDelete(initialData.id);
+                    }}
+                    className="w-full px-3 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  >
+                    Xóa
+                  </button>
+                )}
               </div>
             </div>
           </div>

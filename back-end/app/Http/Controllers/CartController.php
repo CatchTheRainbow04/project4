@@ -183,4 +183,5 @@ class CartController extends Controller
             return response()->json(['message' => 'Checkout failed'], 500);
         }
     }
+
 }

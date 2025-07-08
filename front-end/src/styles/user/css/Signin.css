@@ -1,0 +1,85 @@
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 12px 57.3px;
+  cursor: pointer;
+  font-weight: bold;
+  border-bottom: 2px solid transparent;
+  color: #333;
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  font-size: 16px;
+  transition: border-bottom 0.3s ease;
+}
+.dark .tab {
+  color: white;
+}
+
+.tab.active {
+  border-bottom: 2px solid #2196f3;
+  color: white;
+}
+.dark .tab.active {
+  border-bottom: 2px solid #2196f3;
+  color: white;
+}
+
+.tab:not(.active):hover {
+  border-bottom: 2px solid #2196f3;
+}
+
+.form-group input {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: 0.5s ease;
+}
+.login-button:hover {
+  transform: scale(1.02);
+}
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+.dark .login-button {
+  background-color: white;
+  color: black;
+}
+
+.forgot-password {
+  display: block;
+  text-align: right;
+  margin-top: 8px;
+  color: #2196f3;
+  text-decoration: none;
+}
+
+.or-text {
+  text-align: center;
+  margin: 16px 0;
+}

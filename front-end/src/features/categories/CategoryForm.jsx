@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../services/axiosClient";
+import categoryApi from "../../services/categoryApi";
+import { toast } from "react-toastify";
 
-function CategoryForm({ initialData = {}, onSubmit, onCancel }) {
+function CategoryForm({ initialData = {}, onCancel }) {
   const [name, setName] = useState(initialData.name || "");
   const [parentId, setParentId] = useState(initialData.parent_id || "");
   const [dropdown, setDropdown] = useState([]);
@@ -14,8 +16,8 @@ function CategoryForm({ initialData = {}, onSubmit, onCancel }) {
 
   useEffect(() => {
     setLoadingDropdown(true);
-    axiosClient
-      .get("/categories-dropdown")
+    categoryApi
+      .dropdown()
       .then((res) => {
         setDropdown(Array.isArray(res.data) ? res.data : []);
       })
@@ -27,38 +29,43 @@ function CategoryForm({ initialData = {}, onSubmit, onCancel }) {
     e.preventDefault();
     try {
       if (initialData.id) {
-        await axiosClient.put(`/categories/${initialData.id}`, {
+        await categoryApi.update(initialData.id, {
           ...initialData,
           name,
           parent_id: parentId || null,
         });
+        toast.success("Cập nhật danh mục thành công");
         if (onCancel) onCancel();
       } else {
-        await axiosClient.post("/categories", {
+        await categoryApi.create({
           name,
           parent_id: parentId || null,
         });
+        toast.success("Thêm mới danh mục thành công");
         if (onCancel) onCancel();
       }
-      if (onSubmit) onSubmit();
+      if (onCancel) onCancel();
     } catch (err) {
-      if (err.response?.data?.errors) {
-        alert(Object.values(err.response.data.errors).join("\n"));
+      if (err.response && err.response.data && err.response.data.errors) {
+        Object.values(err.response.data.errors).forEach((messages) => {
+          messages.forEach((msg) => toast.error(msg));
+        });
       } else {
-        alert("Lưu danh mục thất bại!");
+        toast.error("Lưu danh mục thất bại !");
       }
     }
   };
   // Handle delete action
   const handleDelete = async (id) => {
-      if (!window.confirm("Bạn có chắc muốn xóa?")) return;
-      try {
-        await axiosClient.delete(`/categories/${id}`);
-        if (onSubmit) onSubmit();
-      } catch {
-        alert("Xóa thất bại!");
-      }
-    };
+    if (!window.confirm("Bạn có chắc muốn xóa?")) return;
+    try {
+      await axiosClient.delete(`/categories/${id}`);
+      toast.success("Xóa danh mục thành công");
+      if (onCancel) onCancel();
+    } catch {
+      toast.error("Xóa danh mục thất bại");
+    }
+  };
 
   return (
     <div className="h-full w-full flex flex-col justify-center items-center">
@@ -76,7 +83,6 @@ function CategoryForm({ initialData = {}, onSubmit, onCancel }) {
             onChange={(e) => setName(e.target.value)}
             className="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             placeholder="Nhập tên danh mục"
-            required
           />
         </div>
         <div className="mb-4">
@@ -106,13 +112,15 @@ function CategoryForm({ initialData = {}, onSubmit, onCancel }) {
           >
             {initialData.id ? "Cập nhật" : "Tạo mới"}
           </button>
-          {initialData.id && (<button
-            type="button"
-            onClick={() => handleDelete(initialData.id)}
-            className="bg-red-600 dark:bg-red-600 text-gray-100 dark:text-gray-100 px-4 py-2 rounded hover:bg-red-700 dark:hover:bg-red-700 transition-all duration-200 active:scale-95 focus:ring-2 focus:ring-gray-400"
-          >
-            Xóa
-          </button>)}
+          {initialData.id && (
+            <button
+              type="button"
+              onClick={() => handleDelete(initialData.id)}
+              className="bg-red-600 dark:bg-red-600 text-gray-100 dark:text-gray-100 px-4 py-2 rounded hover:bg-red-700 dark:hover:bg-red-700 transition-all duration-200 active:scale-95 focus:ring-2 focus:ring-gray-400"
+            >
+              Xóa
+            </button>
+          )}
           <button
             type="button"
             onClick={onCancel}

@@ -6,89 +6,125 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Illuminate\Validation\Rules\Password;
+use App\Models\Role;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
 {
-    /**
-     * Đăng ký tài khoản mới
-     */
-    public function register(Request $request)
+
+    public function register(RegisterRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', Password::defaults()],
-        ]);
+        $validated = $request->validate();
+
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            "name" => $validated["name"],
+            "email" => $validated["email"],
+            "password" => Hash::make($validated["password"]),
         ]);
-        $token = $user->createToken('api-token')->plainTextToken;
-        return response()->json(['user' => $user, 'access_token' => $token], 201);
+        // Gán role có id = 2 (customer)
+        $customerRole = Role::where("name", "customer")->first();
+        if ($customerRole) {
+            $user->roles()->attach($customerRole->id);
+        }
+        $token = $user->createToken("api-token")->plainTextToken;
+        return response()->json(
+            ["user" => $user, "access_token" => $token],
+            201
+        );
     }
 
-    /**
-     * Đăng nhập
-     */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+            "email" => "required|email",
+            "password" => "required",
         ]);
-        $user = User::where('email', $credentials['email'])->first();
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            return response()->json(['message' => 'Thông tin đăng nhập không đúng'], 401);
+        $user = User::where("email", $credentials["email"])->first();
+        if (!$user || !Hash::check($credentials["password"], $user->password)) {
+            return response()->json(
+                ["message" => "Thông tin đăng nhập không đúng"],
+                401
+            );
         }
-        $token = $user->createToken('api-token')->plainTextToken;
-        return response()->json(['user' => $user, 'access_token' => $token]);
+        $token = $user->createToken("api-token")->plainTextToken;
+        return response()->json(["user" => $user, "access_token" => $token]);
     }
 
-    /**
-     * Đăng xuất (thu hồi token)
-     */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Đăng xuất thành công']);
+        $request
+            ->user()
+            ->currentAccessToken()
+            ->delete();
+        return response()->json(["message" => "Đăng xuất thành công"]);
     }
 
-    /**
-     * Lấy thông tin user đang đăng nhập
-     */
     public function me(Request $request)
     {
-        $user = User::with(['roles', 'carts', 'orders', 'products'])->find($request->user()->id);
+        $user = User::with(["roles", "carts", "orders", "products"])->find(
+            $request->user()->id
+        );
         return response()->json([
-            'user' => $user,
+            "user" => $user,
         ]);
     }
 
-    /**
-     * Cập nhật thông tin user
-     */
-    public function update(Request $request)
-    {
-        $user = $request->user();
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'sometimes|required|string|min:6',
-        ]);
+    public function updateUser(Request $request)
+{
+    $user = $request->user();
 
-        if (isset($validated['name'])) {
-            $user->name = $validated['name'];
-        }
-        if (isset($validated['email'])) {
-            $user->email = $validated['email'];
-        }
-        if (isset($validated['password'])) {
-            $user->password = Hash::make($validated['password']);
-        }
-        $user->save();
+    // Validate tùy trường hợp
+    $validated = $request->validate([
+        "name" => "sometimes|string|max:255",
+        "email" => "sometimes|email|max:255|unique:users,email," . $user->id,
+        "birthday" => "nullable|date",
+        "phone" => "nullable|string|max:20",
+        "province" => "nullable|string|max:100",
+        "district" => "nullable|string|max:100",
+        "ward" => "nullable|string|max:100",
+        "address_detail" => "nullable|string|max:255",
+    ]);
 
-        return response()->json(['message' => 'Thông tin đã được cập nhật', 'user' => $user]);
+    // Gán các thông tin khác nếu có
+    $fields = ['name', 'email', 'birthday', 'phone', 'province', 'district', 'ward', 'address_detail'];
+    foreach ($fields as $field) {
+        if (isset($validated[$field])) {
+            $user->$field = $validated[$field];
+        }
     }
+
+    $user->save();
+
+    return response()->json([
+        "message" => "Cập nhật thông tin thành công",
+        "user" => $user,
+    ]);
+}
+public function changePassword(Request $request)
+{
+    $user = $request->user();
+
+    $request->validate([
+        'old_password' => 'required|string',
+        'password' => 'required|string|min:6|confirmed',
+    ]);
+
+    // Kiểm tra mật khẩu cũ có đúng không
+    if (!Hash::check($request->old_password, $user->password)) {
+        return response()->json([
+            'message' => 'Mật khẩu cũ không đúng'
+        ], 400);
+    }
+
+    // Cập nhật mật khẩu mới
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    return response()->json([
+        'message' => 'Đổi mật khẩu thành công',
+        "user" => $user,
+    ]);
+}
+
 }

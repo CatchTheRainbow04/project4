@@ -1,0 +1,61 @@
+.account-order-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 40px;
+}
+
+.orders {
+  flex: 3;
+  margin-right: 40px;
+}
+
+.orders h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.orders table {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}
+
+.orders th, .orders td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.empty-order {
+  font-style: italic;
+  color: #666;
+}
+
+.account-sidebar {
+  flex: 1;
+}
+
+.account-sidebar h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.account-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.account-sidebar li {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.account-sidebar a {
+  text-decoration: none;
+  color: #007bff;
+}
+.order-info{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}

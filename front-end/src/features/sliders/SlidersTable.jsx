@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import debounce from "lodash/debounce";
 import axiosClient from "../../services/axiosClient";
+import { useNavigate } from "react-router-dom";
 
 // Skeleton component cho layout ngang
 const SliderSkeleton = () => (
@@ -26,7 +27,8 @@ const SliderSkeleton = () => (
   </div>
 );
 
-function SlidersTable({ onEditSlider }) {
+function SlidersTable() {
+  const navigate = useNavigate();
   const [sliders, setSliders] = useState([]);
   const [filteredSliders, setFilteredSliders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -288,7 +290,7 @@ function SlidersTable({ onEditSlider }) {
                 <motion.div
                   key={slider.id}
                   variants={itemVariants}
-                  onClick={(e) => { e.stopPropagation(); onEditSlider(slider); }}
+                  onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/sliders/edit/${slider.id}`); }}
                   className="cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 transform hover:scale-[1.02]"
                 >
                   <div className="flex gap-4 p-4">

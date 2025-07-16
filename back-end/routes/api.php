@@ -77,6 +77,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('orders/{id}/status', [OrderController::class, 'updateStatus']);
     Route::get('orders-statistics', [OrderController::class, 'statistics']);
     Route::post('/buy-now', [OrderController::class, 'buyNow']);
+    Route::get('/myOrders', [OrderController::class, 'myOrders']);
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancelOrder']);
 
     // Quản lý thanh toán
     Route::get('payments', [PaymentController::class, 'index']);

@@ -1,13 +1,29 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../services/axiosClient";
 import { toast } from "react-toastify";
+import { useParams, useNavigate } from "react-router-dom";
 
-function TagForm({ initialData = {}, onCancel }) {
-  const [name, setName] = useState(initialData.name || "");
+function TagForm() {
+  const {id} = useParams();
+  const navigate = useNavigate();
+  const [initialData, setInitialData] = useState({});
+  const [name, setName] = useState("");
 
   useEffect(() => {
-    setName(initialData.name || "");
-  }, [initialData]);
+    if (id) {
+      axiosClient.get(`/tags/${id}`)
+        .then((res) => {
+          setInitialData(res.data);
+          setName(res.data.name || "");
+        })
+        .catch(() => {
+          toast.error("Lỗi tải tag!");
+        });
+    } else {
+      setInitialData({});
+      setName("");
+    }
+  }, [id, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +35,7 @@ function TagForm({ initialData = {}, onCancel }) {
         await axiosClient.post("/tags", { name });
         toast.success("Thêm tag thành công");
       }
-      if (onCancel) onCancel();
+      navigate("/dashboard/tags");
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         Object.values(err.response.data.errors).forEach((messages) => {
@@ -36,7 +52,7 @@ function TagForm({ initialData = {}, onCancel }) {
     try {
       await axiosClient.delete(`/tags/${initialData.id}`);
       toast.success("Xoá tag thành công");
-      if (onCancel) onCancel();
+      navigate("/dashboard/tags");
     } catch {
       toast.error("Xoá tag thất bại");
     }
@@ -79,7 +95,7 @@ function TagForm({ initialData = {}, onCancel }) {
           )}
           <button
             type="button"
-            onClick={onCancel}
+            onClick={() => navigate("/dashboard/tags")}
             className="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-500 transition-all duration-200 active:scale-95 focus:ring-2 focus:ring-gray-400"
           >
             Huỷ

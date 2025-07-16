@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 function Profile() {
   const navigate = useNavigate();
   const { user, logout, isAuthLoaded, isAuthenticated } = useAuth();
-  console.log(user);
   const hasCheckedAuth = useRef(false);
   useEffect(() => {
     if (!isAuthLoaded) return;

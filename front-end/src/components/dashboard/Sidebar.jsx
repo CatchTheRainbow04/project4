@@ -6,14 +6,6 @@ function Sidebar({
   sidebarOpen,
   setSidebarOpen,
   variant = "default",
-  onShowCategories,
-  onShowMenu,
-  onShowProducts,
-  onShowPermissions,
-  onShowSliders,
-  onShowRoles,
-  onShowUsers,
-  onShowTags,
 }) {
   const location = useLocation();
   const { pathname } = location;
@@ -130,10 +122,28 @@ function Sidebar({
               </span>
             </h3>
             <ul className="mt-3">
-              {/* Category */}
+              {/* Dashboard */}
               <SidebarItem
-                activeCondition={pathname.includes("/dashboard")}
-                title="Category"
+                title="Dashboard"
+                icon={
+                  <svg
+                    className="shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                  </svg>
+                }
+                activeCondition={pathname === "/dashboard"}
+                to="/dashboard"
+              />
+
+              {/* Categories */}
+              <SidebarItem
+                title="Categories"
                 icon={
                   <svg
                     className="shrink-0"
@@ -146,28 +156,16 @@ function Sidebar({
                     <path d="M2 2h4v4H2V2zm0 6h4v4H2V8zm6-6h4v4H8V2zm0 6h4v4H8V8z" />
                   </svg>
                 }
-                onMenuClick={onShowMenu}
-                onExpandSidebar={() => setSidebarExpanded(true)}
+                to="/dashboard/categories"
+                activeCondition={pathname.startsWith("/dashboard/categories")}
                 subMenuItems={[
-                  {
-                    label: "List of categories",
-                    onClick: () => onShowCategories && onShowCategories(),
-                    isActive: Boolean(onShowCategories),
-                    ariaLabel: "Categories menu",
-                  },
-                  {
-                    label: "Add new categories",
-                    onClick: () =>
-                      onShowCategories && onShowCategories("categoryForm"),
-                    isActive: Boolean(onShowCategories),
-                    ariaLabel: "Categories menu",
-                  },
+                  { label: "Danh sách danh mục", to: "/dashboard/categories" },
+                  { label: "Thêm danh mục", to: "/dashboard/categories/create" },
                 ]}
               />
 
               {/* Products */}
               <SidebarItem
-                activeCondition={pathname.includes("/dashboard")}
                 title="Products"
                 icon={
                   <svg
@@ -180,28 +178,16 @@ function Sidebar({
                     <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z" />
                   </svg>
                 }
-                onMenuClick={onShowMenu}
-                onExpandSidebar={() => setSidebarExpanded(true)}
+                to="/dashboard/products"
+                activeCondition={pathname.startsWith("/dashboard/products")}
                 subMenuItems={[
-                  {
-                    label: "List of products",
-                    onClick: () => onShowProducts && onShowProducts(),
-                    isActive: Boolean(onShowProducts),
-                    ariaLabel: "Products menu",
-                  },
-                  {
-                    label: "Add new product",
-                    onClick: () =>
-                      onShowProducts && onShowProducts("productForm"),
-                    isActive: Boolean(onShowProducts),
-                    ariaLabel: "Products menu",
-                  },
+                  { label: "Danh sách sản phẩm", to: "/dashboard/products" },
+                  { label: "Thêm sản phẩm", to: "/dashboard/products/create" },
                 ]}
               />
 
               {/* Permissions */}
               <SidebarItem
-                activeCondition={pathname.includes("/dashboard")}
                 title="Permissions"
                 icon={
                   <svg
@@ -214,28 +200,16 @@ function Sidebar({
                     <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
                   </svg>
                 }
-                onMenuClick={onShowMenu}
-                onExpandSidebar={() => setSidebarExpanded(true)}
+                to="/dashboard/permissions"
+                activeCondition={pathname.startsWith("/dashboard/permissions")}
                 subMenuItems={[
-                  {
-                    label: "List of permissions",
-                    onClick: () => onShowPermissions && onShowPermissions(),
-                    isActive: Boolean(onShowPermissions),
-                    ariaLabel: "Permissions menu",
-                  },
-                  {
-                    label: "Add new permission",
-                    onClick: () =>
-                      onShowPermissions && onShowPermissions("permissionForm"),
-                    isActive: Boolean(onShowPermissions),
-                    ariaLabel: "Permissions menu",
-                  },
+                  { label: "Danh sách phân quyền", to: "/dashboard/permissions" },
+                  { label: "Thêm phân quyền", to: "/dashboard/permissions/create" },
                 ]}
               />
 
               {/* Sliders */}
               <SidebarItem
-                activeCondition={pathname.includes("/dashboard")}
                 title="Sliders"
                 icon={
                   <svg
@@ -248,27 +222,16 @@ function Sidebar({
                     <path d="M6 2a.5.5 0 0 1 .47.33L10 12.036l1.53-4.208A.5.5 0 0 1 12 7.5h3.5a.5.5 0 0 1 0 1h-3.15l-1.88 5.17a.5.5 0 0 1-.94 0L6 3.964 4.47 8.171A.5.5 0 0 1 4 8.5H.5a.5.5 0 0 1 0-1h3.15l1.88-5.17A.5.5 0 0 1 6 2Z" />
                   </svg>
                 }
-                onMenuClick={onShowMenu}
-                onExpandSidebar={() => setSidebarExpanded(true)}
+                to="/dashboard/sliders"
+                activeCondition={pathname.startsWith("/dashboard/sliders")}
                 subMenuItems={[
-                  {
-                    label: "List of sliders",
-                    onClick: () => onShowSliders && onShowSliders(),
-                    isActive: Boolean(onShowSliders),
-                    ariaLabel: "Sliders menu",
-                  },
-                  {
-                    label: "Add new slider",
-                    onClick: () => onShowSliders && onShowSliders("sliderForm"),
-                    isActive: Boolean(onShowSliders),
-                    ariaLabel: "Sliders menu",
-                  },
+                  { label: "Danh sách slider", to: "/dashboard/sliders" },
+                  { label: "Thêm slider", to: "/dashboard/sliders/create" },
                 ]}
               />
 
               {/* Roles */}
               <SidebarItem
-                activeCondition={pathname.includes("/dashboard")}
                 title="Roles"
                 icon={
                   <svg
@@ -281,26 +244,16 @@ function Sidebar({
                     <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z" />
                   </svg>
                 }
-                onMenuClick={onShowMenu}
-                onExpandSidebar={() => setSidebarExpanded(true)}
+                to="/dashboard/roles"
+                activeCondition={pathname.startsWith("/dashboard/roles")}
                 subMenuItems={[
-                  {
-                    label: "List of roles",
-                    onClick: () => onShowRoles && onShowRoles(),
-                    isActive: Boolean(onShowRoles),
-                    ariaLabel: "Roles menu",
-                  },
-                  {
-                    label: "Add new role",
-                    onClick: () => onShowRoles && onShowRoles("roleForm"),
-                    isActive: Boolean(onShowRoles),
-                    ariaLabel: "Roles menu",
-                  },
+                  { label: "Danh sách vai trò", to: "/dashboard/roles" },
+                  { label: "Thêm vai trò", to: "/dashboard/roles/create" },
                 ]}
               />
+
               {/* Users */}
               <SidebarItem
-                activeCondition={pathname.includes("/dashboard")}
                 title="Users"
                 icon={
                   <svg
@@ -313,26 +266,17 @@ function Sidebar({
                     <path d="M8 1a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm3.5 6a3.5 3.5 0 1 1-7 0A3.5 3.5 0 0 1 11.5 7zM8.5 9a4.5 4.5 0 1 1-9 0A4.5 4.5 0 0 1 8.5 9z" />
                   </svg>
                 }
-                onMenuClick={onShowMenu}
-                onExpandSidebar={() => setSidebarExpanded(true)}
+                to="/dashboard/users"
+                activeCondition={pathname.startsWith("/dashboard/users")}
                 subMenuItems={[
-                  {
-                    label: "List of users",
-                    onClick: () => onShowUsers && onShowUsers(),
-                    isActive: Boolean(onShowUsers),
-                    ariaLabel: "Users menu",
-                  },
-                  {
-                    label: "Add new user",
-                    onClick: () => onShowUsers && onShowUsers("userForm"),
-                    isActive: Boolean(onShowUsers),
-                    ariaLabel: "Users menu",
-                  },
+                  { label: "Danh sách người dùng", to: "/dashboard/users" },
+                  { label: "Thêm người dùng", to: "/dashboard/users/create" },
+                  { label: "Thống kê người dùng", to: "/dashboard/users/statistics" },
                 ]}
               />
+
               {/* Tags */}
               <SidebarItem
-                activeCondition={pathname.includes("/dashboard")}
                 title="Tags"
                 icon={
                   <svg
@@ -347,21 +291,11 @@ function Sidebar({
                     <path d="M5.5 5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
                   </svg>
                 }
-                onMenuClick={onShowMenu}
-                onExpandSidebar={() => setSidebarExpanded(true)}
+                to="/dashboard/tags"
+                activeCondition={pathname.startsWith("/dashboard/tags")}
                 subMenuItems={[
-                  {
-                    label: "List of tags",
-                    onClick: () => onShowTags && onShowTags(),
-                    isActive: Boolean(onShowTags),
-                    ariaLabel: "Tags menu",
-                  },
-                  {
-                    label: "Add new tag",
-                    onClick: () => onShowTags && onShowTags("tagForm"),
-                    isActive: Boolean(onShowTags),
-                    ariaLabel: "Tags menu",
-                  },
+                  { label: "Danh sách tag", to: "/dashboard/tags" },
+                  { label: "Thêm tag", to: "/dashboard/tags/create" },
                 ]}
               />
             </ul>

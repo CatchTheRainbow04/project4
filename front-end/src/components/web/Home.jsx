@@ -37,18 +37,16 @@ function Home() {
     setLoading((prev) => ({ ...prev, phukien: true }));
   }, [selectedPhukienCategoryId]);
 
-  useEffect(() => {
-    if (ao.length || ao.length === 0)
-      setLoading((prev) => ({ ...prev, ao: false }));
-  }, [ao]);
-  useEffect(() => {
-    if (quan.length || quan.length === 0)
-      setLoading((prev) => ({ ...prev, quan: false }));
-  }, [quan]);
-  useEffect(() => {
-    if (phukien.length || phukien.length === 0)
-      setLoading((prev) => ({ ...prev, phukien: false }));
-  }, [phukien]);
+useEffect(() => {
+  const checkLoading = (data, key) => {
+    if (Array.isArray(data)) {
+      setLoading((prev) => ({ ...prev, [key]: false }));
+    }
+  };
+  checkLoading(ao, "ao");
+  checkLoading(quan, "quan");
+  checkLoading(phukien, "phukien");
+}, [ao, quan, phukien]);
 
   const [categories, setCategories] = useState([]);
   const { addItem } = useCart();
@@ -157,17 +155,7 @@ function Home() {
   const renderProductList = (products, sectionKey) => (
     <div className="product-list">
       {loading[sectionKey] ? (
-        <div
-          className="no-products"
-          style={{
-            textAlign: "center",
-            padding: "20px",
-            color: "#666",
-            width: "100%",
-          }}
-        >
-          Đang tải sản phẩm...
-        </div>
+        <div className="loader"></div>
       ) : products.length > 0 ? (
         products.map((product) => (
           <ProductCard

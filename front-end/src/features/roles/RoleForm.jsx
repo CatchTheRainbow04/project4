@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../services/axiosClient";
 import { toast } from "react-toastify";
+import { useParams, useNavigate } from "react-router-dom";
 
-function RoleForm({ initialData = {}, onCancel }) {
-  const [name, setName] = useState(initialData.name || "");
-  const [displayName, setDisplayName] = useState(
-    initialData.display_name || ""
+function RoleForm() {
+  const {id} = useParams();
+  const navigate = useNavigate();
+  const [initialData, setInitialData] = useState({});
+  const [name, setName] = useState();
+  const [displayName, setDisplayName] = useState( 
   );
-  const [selectedPermissions, setSelectedPermissions] = useState(
-    initialData.permissions?.map((p) => p.id) || []
-  );
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState(
-    initialData.users?.map((u) => u.id) || []
+    []
   );
   const [permissions, setPermissions] = useState([]);
   const [users, setUsers] = useState([]);
@@ -29,7 +30,7 @@ function RoleForm({ initialData = {}, onCancel }) {
           axiosClient.get("/permissions"),
           axiosClient.get("/users"),
         ]);
-        // Handle Laravel API response structure
+
         const permissionsData =
           permissionsRes.data.data || permissionsRes.data || [];
         const usersData = usersRes.data.data || usersRes.data || [];
@@ -52,11 +53,23 @@ function RoleForm({ initialData = {}, onCancel }) {
   }, []);
 
   useEffect(() => {
-    setName(initialData.name || "");
-    setDisplayName(initialData.display_name || "");
-    setSelectedPermissions(initialData.permissions?.map((p) => p.id) || []);
-    setSelectedUsers(initialData.users?.map((u) => u.id) || []);
-  }, [initialData]);
+    if (id) {
+      axiosClient
+        .get(`/roles/${id}`)
+        .then((res) => {
+          const roleData = res.data;
+          setInitialData(roleData);
+          setName(roleData.name || "");
+          setDisplayName(roleData.display_name || "");
+          setSelectedPermissions(roleData.permissions?.map((p) => p.id) || []);
+          setSelectedUsers(roleData.users?.map((u) => u.id) || []);
+        })
+        .catch(() => {
+          toast.error("Lỗi tải vai trò!");
+          navigate("/dashboard/roles");
+        });
+    }
+  }, [id, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,12 +84,10 @@ function RoleForm({ initialData = {}, onCancel }) {
         await axiosClient.put(`/roles/${initialData.id}`, data);
         roleId = initialData.id;
         toast.success("Cập nhật vai trò thành công!");
-        if (onCancel) onCancel();
       } else {
         const response = await axiosClient.post("/roles", data);
         roleId = response.data.id;
         toast.success("Tạo vai trò mới thành công!");
-        if (onCancel) onCancel();
       }
 
       // Sync permissions
@@ -90,7 +101,7 @@ function RoleForm({ initialData = {}, onCancel }) {
         users: selectedUsers,
       });
       toast.success("Cập nhật vai trò cho người dùng thành công!");
-      if (onCancel) onCancel();
+      navigate("/dashboard/roles");
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         Object.values(err.response.data.errors).forEach((messages) => {
@@ -106,9 +117,10 @@ function RoleForm({ initialData = {}, onCancel }) {
     if (window.confirm("Bạn chắc chắn muốn xóa vai trò này?")) {
       try {
         await axiosClient.delete(`/roles/${id}`);
-        fetchRoles();
+        toast.success("Xóa vai trò thành công!");
+        navigate("/dashboard/roles");
       } catch {
-        alert("Xóa thất bại!");
+        toast.error("Xóa vai trò thất bại!");
       }
     }
   };
@@ -137,8 +149,8 @@ function RoleForm({ initialData = {}, onCancel }) {
 
   if (loading) {
     return (
-      <div className="loading-overlay">
-        <div className="loading-spinner"></div>
+      <div className="h-full w-full flex justify-center items-center">
+        <div className="loader"></div>
       </div>
     );
   }
@@ -260,7 +272,7 @@ function RoleForm({ initialData = {}, onCancel }) {
           <div className="col-span-2 col-start-4 row-start-6 flex items-end">
             <button
               type="button"
-              onClick={onCancel}
+              onClick={() => navigate("/dashboard/roles")}
               className="w-full px-4 py-2 bg-gray-600 text-white rounded-md transition-all duration-200 hover:bg-gray-700 active:scale-95 focus:ring-2 focus:ring-gray-400"
             >
               Hủy

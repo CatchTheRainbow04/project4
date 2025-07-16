@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 import debounce from "lodash/debounce";
 import axiosClient from "../../services/axiosClient";
+import { useNavigate } from "react-router-dom";
 
 // Skeleton component cho layout ngang
 const ProductSkeleton = () => (
@@ -27,7 +27,8 @@ const ProductSkeleton = () => (
   </div>
 );
 
-function ProductsTable({ onAddProduct, onEditProduct }) {
+function ProductsTable() {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -326,7 +327,7 @@ function ProductsTable({ onAddProduct, onEditProduct }) {
               {paginatedProducts.map(product => (
                 <motion.div
                   key={product.id}
-onClick={() => onEditProduct(product)}
+onClick={() => navigate(`/dashboard/products/edit/${product.id}`)}
   className="cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 transform hover:scale-[1.02]"
                 >
                   {/* Horizontal Card Layout */}

@@ -1,7 +1,7 @@
 import axiosClient from "./axiosClient";
 
 const productApi = {
-    getAll: (params) => {
+  getAll: (params) => {
     return axiosClient.get(`/products/?q=${params}`);
   },
 

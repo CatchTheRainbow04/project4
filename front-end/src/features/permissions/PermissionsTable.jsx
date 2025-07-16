@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axiosClient from "../../services/axiosClient";
 import '../../styles/admin/permissionTable.css';
 
-function PermissionsTable({ onEditPermission }) {
+function PermissionsTable() {
+  const navigate = useNavigate();
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -77,7 +79,7 @@ function PermissionsTable({ onEditPermission }) {
                     <motion.tr
                       key={permission.id}
                       variants={itemVariants}
-                      onClick={() => onEditPermission(permission)}
+                      onClick={() => navigate(`/dashboard/permissions/edit/${permission.id}`)}
                       className={`${
                         permission.parent_id === null ? "font-bold" : " "
                       } hover:bg-blue-100 dark:hover:bg-gray-800 cursor-pointer`}

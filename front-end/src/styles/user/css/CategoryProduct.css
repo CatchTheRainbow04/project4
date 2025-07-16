@@ -187,7 +187,7 @@ body {
   gap:2px;
 }
 .pagination button{
-  width: 30px;
+  width: 60px;
   border: 1px solid black;
   padding: 5px;
   transition: 0.3s ease-in-out;

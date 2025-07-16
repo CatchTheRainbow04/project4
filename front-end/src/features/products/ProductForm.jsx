@@ -1,44 +1,57 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import axiosClient from "../../services/axiosClient";
 import CreatableSelect from "react-select/creatable";
 import Stack from "../../ReactbitsComponents/Stack/Stack";
 import productApi from "../../services/productApi";
 import categoryApi from "../../services/categoryApi";
 import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 
-function ProductForm({ initialData = {}, onCancel }) {
-  const [name, setName] = useState(initialData.name || "");
-  const [price, setPrice] = useState(initialData.price || "");
-  const [categoryId, setCategoryId] = useState(initialData.category_id || "");
+function ProductForm() {
+  const { id } = useParams();
+  const [initialData, setInitialData] = useState({});
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [featureImage, setFeatureImage] = useState(null);
-  const [featureImageName, setFeatureImageName] = useState(
-    initialData.feature_image_name || ""
-  );
-  const [featureImagePath, setFeatureImagePath] = useState(
-    initialData.feature_image_url || ""
-  );
-  const [content, setContent] = useState(initialData.content || "");
+  const [featureImageName, setFeatureImageName] = useState("");
+  const [featureImagePath, setFeatureImagePath] = useState("");
+  const [content, setContent] = useState("");
   const [dropdown, setDropdown] = useState([]);
   const [tags, setTags] = useState([]);
-  const [selectedTags, setSelectedTags] = useState(
-    initialData.tags ? initialData.tags.map((t) => t.name) : []
-  );
+  const [selectedTags, setSelectedTags] = useState([]);
   const [loadingDropdown, setLoadingDropdown] = useState(true);
   const [detailImages, setDetailImages] = useState([]);
+  const [loadingForm, setLoadingForm] = useState(!!id);
 
   useEffect(() => {
-    setName(initialData.name || "");
-    setPrice(initialData.price || "");
-    setCategoryId(initialData.category_id || "");
-    setFeatureImageName(initialData.feature_image_name || "");
-    setFeatureImagePath(initialData.feature_image_url || "");
-    setContent(initialData.content || "");
-    setSelectedTags(
-      initialData.tags ? initialData.tags.map((t) => t.name) : []
-    );
-    // Hiển thị preview các ảnh chi tiết nếu có (chỉ khi edit)
-    setDetailImages([]); // reset file input
-  }, [initialData]);
+    if (id) {
+      setLoadingForm(true);
+      productApi
+        .getById(id)
+        .then((res) => {
+          setInitialData(res.data);
+          setName(res.data.name || "");
+          setPrice(res.data.price || "");
+          setCategoryId(res.data.category_id || "");
+          setFeatureImageName(res.data.feature_image_name || "");
+          setFeatureImagePath(res.data.feature_image_url || "");
+          setContent(res.data.content || "");
+          setSelectedTags(
+            res.data.tags ? res.data.tags.map((t) => t.name) : []
+          );
+          setDetailImages([]);
+        })
+        .catch(() => {
+          toast.error("Lỗi tải sản phẩm!");
+          navigate("/dashboard/products");
+        })
+        .finally(() => {
+          setLoadingForm(false);
+        });
+    }
+  }, [id, navigate]);
 
   useEffect(() => {
     setLoadingDropdown(true);
@@ -56,7 +69,7 @@ function ProductForm({ initialData = {}, onCancel }) {
       })
       .catch(() => setTags([]));
   }, []);
-  //
+
   const images = initialData.images
     ? initialData.images.map((img) => ({
         id: img.id,
@@ -65,31 +78,26 @@ function ProductForm({ initialData = {}, onCancel }) {
           : `http://127.0.0.1:8000${img.image_url}`,
       }))
     : [];
-  //
+
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa?")) return;
-    // Xóa ảnh chi tiết
     try {
       await productApi.delete(id);
       toast.success("Xóa thành công");
-      if (onCancel) onCancel();
+      navigate("/dashboard/products");
     } catch {
-      toast.success("Xóa thất bại");
+      toast.error("Xóa thất bại");
     }
   };
 
-  // Helper: chuyển tags về dạng {value, label} cho react-select
   const tagOptions = tags.map((tag) => ({ value: tag.name, label: tag.name }));
 
-  // Khi chọn tag (multi)
   const handleTagSelectChange = (selected) => {
     setSelectedTags(selected ? selected.map((option) => option.value) : []);
   };
 
-  // Khi tạo tag mới: chỉ thêm vào selectedTags, không gọi API ngay
   const handleCreateTag = (inputValue) => {
     setSelectedTags((prev) => [...prev, inputValue]);
-    // Nếu tag chưa có trong options thì thêm vào options tạm thời
     if (!tags.some((t) => t.name === inputValue)) {
       setTags((prev) => [...prev, { id: null, name: inputValue }]);
     }
@@ -99,10 +107,8 @@ function ProductForm({ initialData = {}, onCancel }) {
     const file = e.target.files[0];
     setFeatureImage(file);
     setFeatureImageName(file ? file.name : "");
-
   };
 
-  // Khi chọn nhiều ảnh chi tiết
   const handleDetailImagesChange = (e) => {
     setDetailImages(Array.from(e.target.files));
   };
@@ -126,12 +132,12 @@ function ProductForm({ initialData = {}, onCancel }) {
       if (initialData.id) {
         await productApi.update(initialData.id, formData);
         toast.success("Sửa sản phẩm thành công");
-        if (onCancel) onCancel();
+        navigate("/dashboard/products");
       } else {
         await productApi.create(formData);
         toast.success(`Đã thêm ${formData.get("name")}`);
+        navigate("/dashboard/products");
       }
-      if (onCancel) onCancel();
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         Object.values(err.response.data.errors).forEach((messages) => {
@@ -142,6 +148,14 @@ function ProductForm({ initialData = {}, onCancel }) {
       }
     }
   };
+
+  if (loadingForm) {
+    return (
+      <div className="h-full w-full flex justify-center items-center">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-800 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -316,7 +330,7 @@ function ProductForm({ initialData = {}, onCancel }) {
               <div className="col-start-5">
                 <button
                   type="button"
-                  onClick={onCancel}
+                  onClick={() => navigate("/dashboard/products")}
                   className="w-full px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Hủy

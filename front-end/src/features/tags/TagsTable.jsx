@@ -1,26 +1,40 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../services/axiosClient";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-const TagsTable = ({onEditTag}) => {
+const TagsTable = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [tags, setTags] = useState([]);
 
   const fetchTags = async () => {
-    const res = await axiosClient.get("/tags");
-    setTags(res.data);
-  };
+    try {
+      const response = await axiosClient.get("/tags");
+      setTags(response.data);
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Lỗi tải danh sách tags!");
+      }
+      setTags([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     fetchTags();
   }, []);
 
-  const handleCreate = async (data) => {
-    try {
-      await axiosClient.post("/tags", data);
-      fetchTags();
-    } catch (error) {
-      alert("Tên tag đã tồn tại hoặc không hợp lệ.");
-    }
-  };
+  if (loading) {
+    return (
+      <div className="h-full w-full flex justify-center items-center">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">
@@ -28,13 +42,13 @@ const TagsTable = ({onEditTag}) => {
       <table className="w-full mt-6 border">
         <thead className="bg-gray-100">
           <tr>
-            <th className="border p-2">ID</th>
-            <th className="border p-2">Tên</th>
+            <th className="border p-2 dark:text-black">ID</th>
+            <th className="border p-2 dark:text-black">Tên</th>
           </tr>
         </thead>
         <tbody>
           {tags.map((tag) => (
-            <tr key={tag.id} onClick={() => onEditTag(tag)}>
+            <tr key={tag.id} onClick={() => navigate(`/dashboard/tags/edit/${tag.id}`)} className="cursor-pointer hover:bg-gray-50 hover:text-black">
               <td className="border p-2">{tag.id}</td>
               <td className="border p-2">{tag.name}</td>
             </tr>

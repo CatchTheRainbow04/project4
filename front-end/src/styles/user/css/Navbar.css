@@ -146,17 +146,10 @@
   background: black;
   transition: width 0.3s ease;
 }
-.dropdown-left li a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  width: 0;
-  background: black;
-  transition: width 0.3s ease;
-}
 
+.dropdown-left li a:hover::after {
+  width: 100%;
+}
 
 .dropdown-left a {
   color: #333;

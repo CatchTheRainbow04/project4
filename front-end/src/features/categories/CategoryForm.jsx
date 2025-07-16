@@ -1,18 +1,38 @@
 import React, { useState, useEffect } from "react";
-import axiosClient from "../../services/axiosClient";
+import { useParams, useNavigate } from "react-router-dom";
 import categoryApi from "../../services/categoryApi";
 import { toast } from "react-toastify";
+import "../../styles/admin/categoryTable.css";
 
-function CategoryForm({ initialData = {}, onCancel }) {
-  const [name, setName] = useState(initialData.name || "");
-  const [parentId, setParentId] = useState(initialData.parent_id || "");
+function CategoryForm() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [initialData, setInitialData] = useState({});
+  const [name, setName] = useState();
+  const [parentId, setParentId] = useState();
   const [dropdown, setDropdown] = useState([]);
   const [loadingDropdown, setLoadingDropdown] = useState(true);
+  const [loadingForm, setLoadingForm] = useState(!!id);
 
   useEffect(() => {
-    setName(initialData.name || "");
-    setParentId(initialData.parent_id || "");
-  }, [initialData]);
+    if (id) {
+      setLoadingForm(true);
+      categoryApi
+        .getById(id)
+        .then((res) => {
+          setInitialData(res.data);
+          setName(res.data.name || "");
+          setParentId(res.data.parent_id || "");
+        })
+        .catch(() => {
+          toast.error("Lỗi tải danh mục !");
+          navigate("/dashboard/categories");
+        })
+        .finally(() => {
+          setLoadingForm(false);
+        });
+    }
+  }, [id, navigate]);
 
   useEffect(() => {
     setLoadingDropdown(true);
@@ -35,16 +55,15 @@ function CategoryForm({ initialData = {}, onCancel }) {
           parent_id: parentId || null,
         });
         toast.success("Cập nhật danh mục thành công");
-        if (onCancel) onCancel();
+        navigate("/dashboard/categories");
       } else {
         await categoryApi.create({
           name,
           parent_id: parentId || null,
         });
         toast.success("Thêm mới danh mục thành công");
-        if (onCancel) onCancel();
+        navigate("/dashboard/categories");
       }
-      if (onCancel) onCancel();
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         Object.values(err.response.data.errors).forEach((messages) => {
@@ -59,13 +78,21 @@ function CategoryForm({ initialData = {}, onCancel }) {
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa?")) return;
     try {
-      await axiosClient.delete(`/categories/${id}`);
+      await categoryApi.delete(id);
       toast.success("Xóa danh mục thành công");
-      if (onCancel) onCancel();
+      navigate("/dashboard/categories");
     } catch {
       toast.error("Xóa danh mục thất bại");
     }
   };
+
+  if (loadingForm) {
+    return (
+      <div className="h-full w-full flex justify-center items-center">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full w-full flex flex-col justify-center items-center">
@@ -123,7 +150,7 @@ function CategoryForm({ initialData = {}, onCancel }) {
           )}
           <button
             type="button"
-            onClick={onCancel}
+            onClick={() => navigate("/dashboard/categories")}
             className="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-500 transition-all duration-200 active:scale-95 focus:ring-2 focus:ring-gray-400"
           >
             Hủy

@@ -171,7 +171,7 @@ const SearchResult = () => {
                 />
               ))
             ) : (
-              <div className="no-products">Không có sản phẩm nào.</div>
+              <div className="loader"></div>
             )}
           </div>
     

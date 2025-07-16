@@ -1,21 +1,38 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../services/axiosClient";
 import { toast } from "react-toastify";
+import { useParams, useNavigate } from "react-router-dom";
 
-function SliderForm({ initialData = {}, onCancel }) {
-  const [name, setName] = useState(initialData.name || "");
-  const [description, setDescription] = useState(initialData.description || "");
+function SliderForm() {
+  const {id} = useParams();
+  const navigate = useNavigate();
+  const [initialData, setInitialData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [name, setName] = useState();
+  const [description, setDescription] = useState();
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState("");
-  const [imageUrl, setImageUrl] = useState(initialData.image_url || "");
+  const [imageUrl, setImageUrl] = useState();
 
   useEffect(() => {
-    setName(initialData.name || "");
-    setDescription(initialData.description || "");
-    setImage(null);
-    setImageName("");
-    setImageUrl(initialData.image_url || "");
-  }, [initialData]);
+    if (id) {
+      axiosClient.get(`/sliders/${id}`)
+        .then((res) => {
+          setInitialData(res.data);
+          setName(res.data.name || "");
+          setDescription(res.data.description || "");
+          setImageName(res.data.image_name || "");
+          setImageUrl(res.data.image_url || "");
+          setLoading(false);
+        })
+        .catch(() => {
+          toast.error("Lỗi tải slider!");
+          navigate("/dashboard/sliders");
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [id, navigate]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -32,42 +49,38 @@ function SliderForm({ initialData = {}, onCancel }) {
     if (image) {
       formData.append("image_path", image);
     }
-    console.log("Form data:", name, description, imageName, imageUrl);
     try {
       if (initialData.id) {
         await axiosClient.post(
           `/sliders/${initialData.id}?_method=PUT`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
+          formData
         );
       } else {
-        await axiosClient.post("/sliders", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await axiosClient.post("/sliders", formData);
       }
       toast.success(
         initialData.id ? "Cập nhật slider thành công!" : "Tạo mới slider thành công!"
       );
-      if (onCancel) onCancel();
+      navigate("/dashboard/sliders");
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.errors) {
-        alert(Object.values(err.response.data.errors).join("\n"));
-      } else {
-        alert("Lưu slider thất bại!");
-      }
-    }
+          if (err.response && err.response.data && err.response.data.errors) {
+            Object.values(err.response.data.errors).forEach((messages) => {
+              messages.forEach((msg) => toast.error(msg));
+            });
+          } else {
+            toast.error("Đã xảy ra lỗi khi lưu slider!");
+          }
+        }
   };
 
   const handleDelete = async () => {
     if (!window.confirm("Bạn có chắc muốn xóa slider này?")) return;
     try {
       await axiosClient.delete(`/sliders/${initialData.id}`);
-      alert("Đã xóa thành công!");
-      if (onCancel) onCancel();
+      toast.success("Xóa slider thành công!");
+      navigate("/dashboard/sliders");
     } catch {
-      alert("Xóa thất bại!");
+      toast.error("Đã xảy ra lỗi khi xóa slider!");
     }
   };
 
@@ -161,7 +174,7 @@ function SliderForm({ initialData = {}, onCancel }) {
           <div className={`flex items-end ${initialData.id ? 'col-start-1 row-start-4' : 'col-start-2 row-start-4'}`}>
             <button
               type="button"
-              onClick={onCancel}
+              onClick={() => navigate("/dashboard/sliders")}
               className="w-full px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Hủy

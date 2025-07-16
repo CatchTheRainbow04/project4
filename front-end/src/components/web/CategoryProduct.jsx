@@ -8,6 +8,7 @@ import "../../styles/user/css/CategoryProduct.css";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/AuthContext";
 import useProductFilter from "../../hooks/useProductFilter";
+import { tr } from "date-fns/locale/tr";
 
 function CategoryProduct() {
   const { isAuthenticated, isAuthLoaded } = useAuth();
@@ -67,9 +68,12 @@ function CategoryProduct() {
         setLoading(false);
       });
   }, [slug]);
-
   if (loading)
-    return <div className="text-center mt-7 mb-7 p-4">Loading...</div>;
+    return (
+  <div className="flex justify-center items-center min-h-[300px]">
+    <div className="loader"></div>
+  </div>
+);;
   if (error)
     return <div className="container mx-auto p-4 text-red-500">{error}</div>;
 

@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../services/axiosClient";
 import { toast } from "react-toastify";
+import { useParams, useNavigate } from "react-router-dom";
 
-function PermissionForm({ initialData = {}, onCancel }) {
-  const [name, setName] = useState(initialData.name || "");
-  const [displayName, setDisplayName] = useState(
-    initialData.display_name || ""
-  );
-  const [keyCode, setKeyCode] = useState(initialData.key_code || "");
-  const [parentId, setParentId] = useState(initialData.parent_id || "");
+function PermissionForm({ onCancel }) {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [initialData, setInitialData] = useState({});
+  const [name, setName] = useState();
+  const [displayName, setDisplayName] = useState();
+  const [keyCode, setKeyCode] = useState();
+  const [parentId, setParentId] = useState();
   const [permissions, setPermissions] = useState([]);
+  const [loadingForm, setLoadingForm] = useState(!!id);
 
   useEffect(() => {
     axiosClient
@@ -21,11 +24,26 @@ function PermissionForm({ initialData = {}, onCancel }) {
   }, []);
 
   useEffect(() => {
-    setName(initialData.name || "");
-    setDisplayName(initialData.display_name || "");
-    setKeyCode(initialData.key_code || "");
-    setParentId(initialData.parent_id || "");
-  }, [initialData]);
+    if (id) {
+      setLoadingForm(true);
+      axiosClient
+        .get(`/permissions/${id}`)
+        .then((res) => {
+          setInitialData(res.data);
+          setName(res.data.name || "");
+          setDisplayName(res.data.display_name || "");
+          setKeyCode(res.data.key_code || "");
+          setParentId(res.data.parent_id || "");
+        })
+        .catch(() => {
+          toast.error("Lỗi tải quyền !");
+          navigate("/dashboard/permissions");
+        })
+        .finally(() => {
+          setLoadingForm(false);
+        });
+    }
+  }, [id, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,13 +58,12 @@ function PermissionForm({ initialData = {}, onCancel }) {
       if (initialData.id) {
         await axiosClient.put(`/permissions/${initialData.id}`, data);
         toast.success("Sửa quyền thành công !");
-        if (onCancel) onCancel();
+        navigate("/dashboard/permissions");
       } else {
         await axiosClient.post("/permissions", data);
         toast.success("Tạo mới quyền thành công !");
-        if (onCancel) onCancel();
+        navigate("/dashboard/permissions");
       }
-      if (onCancel) onCancel();
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         Object.values(err.response.data.errors).forEach((messages) => {
@@ -63,12 +80,20 @@ function PermissionForm({ initialData = {}, onCancel }) {
       try {
         await axiosClient.delete(`/permissions/${id}`);
         toast.success("Xóa quyền thành công !");
-        if (onCancel) onCancel();
+        navigate("/dashboard/permissions");
       } catch {
         toast.error("Xóa thất bại!");
       }
     }
   };
+
+  if (loadingForm) {
+    return (
+      <div className="h-full w-full flex justify-center items-center">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full w-full flex flex-col justify-center items-center">
@@ -160,7 +185,7 @@ function PermissionForm({ initialData = {}, onCancel }) {
 
           <button
             type="button"
-            onClick={onCancel}
+            onClick={() => navigate("/dashboard/permissions")}
             className="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-500 transition-all duration-200 active:scale-95 focus:ring-2 focus:ring-gray-400"
           >
             Hủy

@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../services/axiosClient";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-function RolesTable({ onEditRole }) {
+function RolesTable() {
+  const navigate = useNavigate();
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,6 +47,14 @@ function RolesTable({ onEditRole }) {
     },
   };
 
+  if (loading) {
+    return (
+      <div className="h-full w-full flex justify-center items-center">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="table-container">
       <h2 className="text-2xl font-bold mb-4">Danh sách vai trò</h2>
@@ -75,7 +86,7 @@ function RolesTable({ onEditRole }) {
                       <motion.tr
                         key={role.id}
                         variants={itemVariants}
-                        onClick={() => onEditRole(role)}
+                        onClick={() => navigate(`/dashboard/roles/edit/${role.id}`)}
                         className="cursor-pointer hover:bg-gray-600 hover:text-white"
                       >
                         <td className="border px-4 py-2">{role.id}</td>

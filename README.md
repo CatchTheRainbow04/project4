@@ -3,7 +3,8 @@
 Dự án **E-Commerce Shop Thời Trang** được xây dựng nhằm mô phỏng một hệ thống bán hàng trực tuyến, với đầy đủ các chức năng như hiển thị sản phẩm, phân loại, tìm kiếm, giỏ hàng, đặt hàng và quản trị.
 
 ## 📌 Preview
-👉 Xem preview dự án tại đây: [Google Drive Link](https://drive.google.com/file/d/1M_FaXZLnxAcARWXaRM_VavxTAZQQTugc/view)  
+👉 Xem preview dự án tại đây(Trang thương mại): [Google Drive Link](https://drive.google.com/file/d/1M_FaXZLnxAcARWXaRM_VavxTAZQQTugc/view)  
+👉 Xem preview dự án tại đây(Trang quản trị): [Google Drive Link](https://drive.google.com/file/d/1O0W_9JYDGbWlqR3qabciVNwcXS5tX5Qi/view)  
 (Không cần clone code và cài đặt, bạn có thể xem trực tiếp demo UI/UX ở link trên.)
 
 ---
